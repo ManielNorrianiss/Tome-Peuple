@@ -2,177 +2,342 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#1a0f2e">
-<title>🔮 Synthèse Tome v4 — Fléau</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Challenge Scénaristes — Fléau v2</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+  *:not(input):not(textarea) { user-select: none; }
+  input, textarea { user-select: text; -webkit-user-select: text; }
+  html, body { overscroll-behavior-y: none; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: linear-gradient(180deg, #0d0820 0%, #1a0f2e 50%, #2d1b4e 100%);
     background-attachment: fixed;
     color: #f0e6d2;
     min-height: 100vh;
-    padding: 20px;
+    padding: env(safe-area-inset-top, 8px) env(safe-area-inset-right, 12px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 12px);
     line-height: 1.5;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
   }
-  .container { max-width: 1100px; margin: 0 auto; }
+  .container { max-width: 760px; margin: 0 auto; padding-bottom: 100px; }
+
+  /* HEADER */
   header {
     text-align: center;
-    padding: 20px 0;
+    padding: 16px 0 14px;
     border-bottom: 2px solid #c9a96e;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(180deg, #0d0820 80%, transparent);
+    z-index: 50;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
-  h1 { font-size: 1.8em; color: #ffd700; margin-bottom: 6px; }
-  .subtitle { color: #c9a96e; font-style: italic; font-size: 0.9em; }
+  h1 { font-size: 1.4em; color: #ffd700; margin-bottom: 4px; font-weight: 700; }
+  .subtitle { color: #c9a96e; font-style: italic; font-size: 0.82em; }
+  .home-btn {
+    position: absolute;
+    left: 0; top: 18px;
+    background: rgba(201, 169, 110, 0.2);
+    border: 1px solid #c9a96e;
+    color: #ffd700;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    font-size: 1.3em;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .home-btn.show { display: flex; }
+
+  /* PEOPLE PICKER */
+  #picker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 600px) {
+    #picker { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  }
+  .ppl {
+    background: rgba(0,0,0,0.4);
+    border: 2px solid #4a3b6e;
+    border-radius: 14px;
+    padding: 14px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    position: relative;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .ppl:active { transform: scale(0.96); border-color: #c9a96e; }
+  .ppl .icon { font-size: 2em; margin-bottom: 4px; line-height: 1; }
+  .ppl .name { font-weight: bold; font-size: 0.9em; color: #ffd700; line-height: 1.2; }
+  .ppl .who { font-size: 0.7em; color: #b8a374; margin-top: 4px; line-height: 1.2; }
+  .ppl-progress {
+    position: absolute;
+    top: 6px; right: 6px;
+    background: #2d6e3e;
+    color: white;
+    font-size: 0.65em;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  .ppl-progress.zero { display: none; }
+  .ppl-progress.partial { background: #6e552d; }
+  .ppl-progress.full { background: #2d6e3e; }
+
+  /* APP */
+  .app { display: none; }
+  .app.active { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .app-header {
+    background: rgba(0,0,0,0.5);
+    padding: 14px 16px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    border-left: 4px solid #c9a96e;
+  }
+  .app-title { font-size: 1.2em; color: #ffd700; margin-bottom: 4px; }
+  .app-meta { font-size: 0.82em; color: #b8a374; margin-bottom: 8px; }
+  .progress-bar {
+    height: 8px;
+    background: #2a1f47;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #c9a96e, #ffd700);
+    transition: width 0.5s;
+    border-radius: 4px;
+  }
+  .progress-text {
+    text-align: right;
+    font-size: 0.75em;
+    color: #b8a374;
+    margin-top: 4px;
+  }
 
   /* SECTIONS */
   .section {
     background: rgba(0,0,0,0.32);
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 18px;
+    padding: 14px 12px;
+    margin-bottom: 12px;
     border: 1px solid #3a2d5e;
   }
   .section-title {
-    font-size: 1.2em;
+    font-size: 1em;
     color: #ffd700;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid #4a3b6e;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-counter {
+    font-size: 0.75em;
+    color: #b8a374;
+    background: rgba(0,0,0,0.4);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: auto;
+    font-weight: normal;
   }
 
-  /* DROP ZONE */
-  .drop-zone {
-    border: 2px dashed #c9a96e;
-    border-radius: 12px;
-    padding: 40px 20px;
-    text-align: center;
-    background: rgba(201, 169, 110, 0.05);
-    transition: all 0.2s;
+  /* QUESTION */
+  .question {
+    background: rgba(255,255,255,0.04);
+    padding: 12px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 3px solid #4a3b6e;
+    transition: border-left-color 0.3s;
+  }
+  .question.answered { border-left-color: #2d8e3e; background: rgba(45, 142, 62, 0.06); }
+  .q-number {
+    display: inline-block;
+    font-size: 0.7em;
+    color: #b8a374;
+    margin-bottom: 4px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  .q-text { margin-bottom: 10px; font-size: 0.95em; line-height: 1.45; }
+  .q-claim {
+    background: rgba(201, 169, 110, 0.1);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.82em;
+    color: #c9a96e;
+    margin-bottom: 10px;
+    border-left: 2px solid #c9a96e;
+    line-height: 1.4;
+  }
+  .q-claim::before { content: "📜 Tome v3 dit : "; font-weight: bold; }
+
+  /* BUTTONS */
+  .btn-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  @media (min-width: 480px) {
+    .btn-group { grid-template-columns: repeat(4, 1fr); }
+  }
+  .btn {
+    padding: 12px 8px;
+    border: 2px solid #4a3b6e;
+    background: rgba(0,0,0,0.3);
+    color: #f0e6d2;
+    border-radius: 10px;
     cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.12s;
+    text-align: center;
+    font-weight: 500;
+    -webkit-appearance: none;
+    appearance: none;
+    line-height: 1.3;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .drop-zone:hover, .drop-zone.dragover {
-    background: rgba(201, 169, 110, 0.15);
-    border-color: #ffd700;
-  }
-  .drop-zone .icon { font-size: 3em; margin-bottom: 10px; }
-  .drop-zone-text { color: #c9a96e; font-size: 1.05em; margin-bottom: 6px; }
-  .drop-zone-sub { color: #b8a374; font-size: 0.85em; }
-  #file-input { display: none; }
+  .btn:active { transform: scale(0.94); }
+  .btn.confirm.selected { background: #2d8e3e; color: white; border-color: #4dae5e; box-shadow: 0 0 0 2px rgba(77, 174, 94, 0.3); }
+  .btn.obsolete.selected { background: #8e2d2d; color: white; border-color: #ae4d4d; box-shadow: 0 0 0 2px rgba(174, 77, 77, 0.3); }
+  .btn.update.selected { background: #6e552d; color: white; border-color: #c9a96e; box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.3); }
+  .btn.unknown.selected { background: #555; color: white; border-color: #888; box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.3); }
 
-  /* TEXTAREA INPUT */
-  .json-input {
+  /* TEXT INPUT */
+  textarea, input[type="text"] {
     width: 100%;
-    min-height: 120px;
     padding: 12px;
     background: rgba(0,0,0,0.4);
     border: 1.5px solid #4a3b6e;
     border-radius: 8px;
     color: #f0e6d2;
-    font-family: 'SF Mono', 'Courier New', monospace;
-    font-size: 0.85em;
+    font-family: inherit;
+    font-size: 16px; /* Prevents iOS zoom */
     resize: vertical;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .json-input:focus { outline: none; border-color: #c9a96e; }
+  textarea { min-height: 70px; }
+  textarea:focus, input:focus { outline: none; border-color: #c9a96e; box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.2); }
+  label.subq {
+    display: block;
+    margin: 8px 0 4px;
+    font-size: 0.82em;
+    color: #c9a96e;
+    font-weight: 500;
+  }
 
-  /* RECEIVED LIST */
-  .received-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
+  /* ACTION BAR */
+  .actions {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(13, 8, 32, 0.95);
+    padding: 10px env(safe-area-inset-right, 12px) calc(10px + env(safe-area-inset-bottom, 0px)) env(safe-area-inset-left, 12px);
+    border-top: 2px solid #c9a96e;
+    display: none;
+    gap: 6px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 90;
   }
-  .received-card {
-    background: rgba(0,0,0,0.4);
-    border: 2px solid #3a2d5e;
-    border-radius: 10px;
-    padding: 12px;
-    position: relative;
-  }
-  .received-card.complete { border-color: #2d8e3e; }
-  .received-card .icon { font-size: 1.5em; margin-right: 8px; vertical-align: middle; }
-  .received-card .name { font-weight: bold; color: #ffd700; display: inline-block; }
-  .received-card .meta { font-size: 0.78em; color: #b8a374; margin-top: 4px; }
-  .received-card .stats { font-size: 0.85em; color: #f0e6d2; margin-top: 8px; }
-  .received-card .stats span { margin-right: 10px; }
-  .received-card .delete-btn {
-    position: absolute;
-    top: 8px; right: 8px;
-    background: rgba(142, 45, 45, 0.6);
+  .actions.show { display: flex; }
+  .action-btn {
+    flex: 1;
+    padding: 14px 8px;
     border: none;
-    color: white;
-    width: 24px; height: 24px;
-    border-radius: 50%;
+    border-radius: 10px;
+    font-weight: bold;
     cursor: pointer;
     font-size: 0.85em;
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 48px;
+    transition: transform 0.1s;
   }
+  .action-btn:active { transform: scale(0.96); }
+  .action-btn.primary { background: linear-gradient(135deg, #c9a96e, #ffd700); color: #1a0f2e; }
+  .action-btn.secondary { background: #4a3b6e; color: #f0e6d2; }
+  .action-btn.danger { background: #6e2d2d; color: white; }
 
-  /* SUMMARY */
-  .summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    padding: 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
-  .stat-box {
-    background: rgba(0,0,0,0.4);
-    padding: 14px;
-    border-radius: 10px;
-    text-align: center;
-    border-left: 3px solid #c9a96e;
+  .modal-overlay.show { display: flex; align-items: flex-start; justify-content: center; padding-top: 40px; }
+  .modal {
+    background: #1a0f2e;
+    border: 2px solid #c9a96e;
+    border-radius: 16px;
+    padding: 18px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .stat-num { font-size: 1.8em; color: #ffd700; font-weight: bold; }
-  .stat-label { font-size: 0.78em; color: #b8a374; margin-top: 4px; }
-
-  /* REPORT */
-  .report {
+  .modal h2 { color: #ffd700; margin-bottom: 12px; font-size: 1.2em; padding-right: 30px; }
+  .modal-close {
+    position: absolute;
+    right: 24px; top: 50px;
+    cursor: pointer;
+    font-size: 1.8em;
+    color: #c9a96e;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
     background: rgba(0,0,0,0.5);
-    padding: 20px;
-    border-radius: 10px;
+    border-radius: 50%;
+  }
+  .json-out {
+    background: rgba(0,0,0,0.5);
+    padding: 12px;
+    border-radius: 8px;
     font-family: 'SF Mono', 'Courier New', monospace;
-    font-size: 0.82em;
-    max-height: 70vh;
+    font-size: 0.7em;
+    max-height: 50vh;
     overflow-y: auto;
     white-space: pre-wrap;
     word-break: break-word;
-    line-height: 1.6;
+    -webkit-overflow-scrolling: touch;
   }
-  .report h2 { color: #ffd700; font-size: 1.1em; margin: 14px 0 8px; }
-  .report h3 { color: #c9a96e; font-size: 0.95em; margin: 10px 0 6px; }
-  .report .confirm { color: #4dae5e; }
-  .report .obsolete { color: #ae4d4d; }
-  .report .update { color: #c9a96e; }
-  .report .unknown { color: #888; }
-
-  /* BUTTONS */
-  .btn-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 14px;
-  }
-  .btn {
-    padding: 12px 18px;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.9em;
-    flex: 1;
-    min-width: 140px;
-    transition: transform 0.1s;
-  }
-  .btn:active { transform: scale(0.97); }
-  .btn.primary { background: linear-gradient(135deg, #c9a96e, #ffd700); color: #1a0f2e; }
-  .btn.secondary { background: #4a3b6e; color: #f0e6d2; }
-  .btn.danger { background: #6e2d2d; color: white; }
-  .btn.success { background: #2d6e3e; color: white; }
 
   /* TOAST */
   .toast {
     position: fixed;
-    bottom: 30px;
+    bottom: 90px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     background: linear-gradient(135deg, #2d8e3e, #4dae5e);
@@ -182,461 +347,846 @@
     z-index: 300;
     opacity: 0;
     transition: all 0.3s;
+    font-size: 0.9em;
     font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     pointer-events: none;
+    white-space: nowrap;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.error { background: linear-gradient(135deg, #8e2d2d, #ae4d4d); }
 
-  /* EMPTY STATE */
-  .empty {
-    text-align: center;
-    color: #b8a374;
-    padding: 30px;
-    font-style: italic;
+  /* HOME */
+  .home-intro {
+    background: rgba(0,0,0,0.32);
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border-left: 4px solid #c9a96e;
   }
+  .home-intro p { margin-bottom: 8px; font-size: 0.95em; }
+  .home-intro p:last-child { margin-bottom: 0; }
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.85em;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,0,0,0.3);
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .legend-pill {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-confirm { background: #2d8e3e; }
+  .pill-obsolete { background: #8e2d2d; }
+  .pill-update { background: #c9a96e; }
+  .pill-unknown { background: #888; }
+
+  /* SCROLL ANCHOR */
+  .scroll-anchor { scroll-margin-top: 80px; }
 </style>
 </head>
 <body>
 <div class="container">
 
   <header>
-    <h1>🔮 Synthèse Tome v4.0</h1>
-    <div class="subtitle">Consolidation des challenges des scénaristes</div>
+    <button class="home-btn" id="home-btn" onclick="goHome()" aria-label="Retour">←</button>
+    <h1 id="header-title">📋 Challenge Fléau</h1>
+    <div class="subtitle" id="header-subtitle">Validation Tome v3.0 → v4.0</div>
   </header>
 
-  <!-- IMPORT -->
-  <div class="section">
-    <div class="section-title">📥 1. Importer les JSON reçus</div>
+  <!-- HOME -->
+  <div id="app-home" class="app active">
+    <div id="picker"></div>
 
-    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-      <div class="icon">📂</div>
-      <div class="drop-zone-text">Glisser des fichiers JSON ici</div>
-      <div class="drop-zone-sub">ou cliquer pour parcourir (multiple OK)</div>
+    <div class="home-intro">
+      <p><strong>Bienvenue, scénaristes !</strong></p>
+      <p>Cette app permet de <strong>valider, corriger et enrichir</strong> le savoir de ton peuple. Tes réponses seront intégrées au <strong>Tome v4.0</strong>.</p>
+      <p>📱 Utilisable sur cellulaire · 💾 Sauvegarde auto · 📤 Export JSON pour Josué</p>
     </div>
-    <input type="file" id="file-input" accept=".json,application/json" multiple>
 
-    <div style="margin-top:14px;font-size:0.9em;color:#b8a374;">Ou coller le JSON directement :</div>
-    <textarea
-      id="json-paste"
-      class="json-input"
-      placeholder='Coller un JSON exporté depuis l\'app Challenge ici, puis cliquer "Ajouter"...'
-      style="margin-top:8px;"
-    ></textarea>
-    <div class="btn-row">
-      <button class="btn primary" onclick="addPastedJSON()">➕ Ajouter le JSON collé</button>
-      <button class="btn danger" onclick="clearAll()">🗑️ Tout effacer</button>
+    <div class="section">
+      <div class="section-title">📊 Comment ça marche</div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-pill pill-confirm"></span> ✅ Confirmé</div>
+        <div class="legend-item"><span class="legend-pill pill-obsolete"></span> ❌ Obsolète</div>
+        <div class="legend-item"><span class="legend-pill pill-update"></span> 🔄 À jour</div>
+        <div class="legend-item"><span class="legend-pill pill-unknown"></span> ❓ Inconnu</div>
+      </div>
+      <p style="margin-top:12px;font-size:0.85em;color:#b8a374;">Sélectionne ton peuple ci-dessus. Tape sur les questions, choisis un statut, ajoute des précisions au besoin. Quand t'es prêt, clique sur 📤 Exporter et envoie le JSON à Josué.</p>
     </div>
   </div>
 
-  <!-- RECEIVED -->
-  <div class="section">
-    <div class="section-title">📋 2. Réponses reçues</div>
-    <div id="received-list">
-      <div class="empty">Aucune réponse importée pour l'instant.</div>
-    </div>
+  <!-- APP CONTAINER -->
+  <div id="apps-container"></div>
+
+  <!-- ACTION BAR -->
+  <div class="actions" id="action-bar">
+    <button class="action-btn secondary" onclick="saveProgress()">💾 Sauver</button>
+    <button class="action-btn primary" onclick="exportJSON()">📤 Exporter</button>
+    <button class="action-btn danger" onclick="resetCurrent()">🔄 Reset</button>
   </div>
 
-  <!-- SUMMARY -->
-  <div class="section" id="summary-section" style="display:none;">
-    <div class="section-title">📊 3. Vue d'ensemble</div>
-    <div class="summary" id="summary"></div>
-  </div>
-
-  <!-- REPORT -->
-  <div class="section" id="report-section" style="display:none;">
-    <div class="section-title">📄 4. Rapport de consolidation pour le Tome v4.0</div>
-    <div class="btn-row" style="margin-bottom:14px;">
-      <button class="btn primary" onclick="generateReport()">🔮 Générer le rapport</button>
-      <button class="btn secondary" onclick="copyReport()">📋 Copier</button>
-      <button class="btn success" onclick="downloadReport('md')">💾 Télécharger .md</button>
-      <button class="btn success" onclick="downloadReport('json')">💾 Télécharger .json</button>
+  <!-- MODAL EXPORT -->
+  <div class="modal-overlay" id="export-modal">
+    <div class="modal">
+      <span class="modal-close" onclick="closeModal()">×</span>
+      <h2>📤 Export pour Josué</h2>
+      <p style="margin-bottom:10px;color:#c9a96e;font-size:0.88em;">Copie ce texte et envoie-le à Josué (Messenger ou email) :</p>
+      <div class="json-out" id="json-out"></div>
+      <button class="action-btn primary" onclick="copyJSON()" style="width:100%;margin-top:12px;">📋 Tout copier</button>
+      <button class="action-btn secondary" onclick="downloadJSON()" style="width:100%;margin-top:8px;">💾 Télécharger en fichier</button>
     </div>
-    <div class="report" id="report-output"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 </div>
 
 <script>
-let received = {};
-try { received = JSON.parse(localStorage.getItem('fleau_synthesis_v1') || '{}'); } catch(e) { received = {}; }
+// ============================================================
+// DATA
+// ============================================================
+const PEOPLES = {
 
-const PEOPLE_ICONS = {
-  'moriquendi': '🕷️', 'lossado': '🏯', 'pandor': '⚜️', 'oz': '🌈',
-  'sables': '🐪', 'numenor': '⚓', 'nazzakri': '👁️', 'elfes': '🌳', 'nains': '⚒️'
+  'moriquendi': {
+    icon: '🕷️',
+    name: 'Moriquendi',
+    who: 'Josué (Alevarto), Mathieux',
+    sections: [
+      { title: '👥 Familles & Matronnes', questions: [
+        { id: 'matronnes_2026', text: 'Liste des 6 matronnes en 2026 — toujours exacte ?', claim: 'Yemana (Iznogood/grande), Moona (Norrianiss), Valérianna (Waral intérim), Mynoline (Drehjur), Alyda (Bois-de-l\'Est), Talia (Tolvir).' },
+        { id: 'tolvir_existence', text: 'Famille Tolvir = 6e famille mori officielle ?', claim: 'Drow refugiée chez les Waral, moitié transformée en mori. Talia Tolvir matronne.' },
+        { id: 'valerianna_status', text: 'Valérianna Waral encore "matriarche par intérim" ?', claim: 'Depuis la traîtrise de Valérianne (sa fille). Possède le cadeau Waral.' },
+        { id: 'aamos_duc', text: 'Aamos Waral confirmé duc du néant ?', claim: 'Ex arch-prêtre, sacrifié pour la déesse. A voilé les Silmarils donnés à Araushnée.' },
+        { id: 'vorn_charlina', text: 'Famille Vorn — drow d\'Araushnée, matronne Charlina ?', claim: 'Membres : Merinid, Ranas, X. Cath joue Charlina.' },
+        { id: 'estelle_yavanna', text: 'Estelle Norrianiss = réincarnation de Yavanna ?', claim: 'Fille de Moona et Maniel. Touchée par le divin.' },
+      ]},
+      { title: '🕸️ Araushnée & Théologie', questions: [
+        { id: 'ducs_total', text: '9 ducs au total (4 Aranaé + 4 Loth + Aamos néant) ?', claim: 'Abigor, Vulkens, Shelob, Ichtios + 4 créés par Loth + Aamos.' },
+        { id: 'shelob_capture', text: 'Shelob capturée par les Illithids avec Daznogood ?', claim: 'Banquet 2026 : "Daznogood pris complètement, Shelob inclus".' },
+        { id: 'abigor_dead', text: 'Abigor (duc crabe) — mort fratricide par Selvetarm ?', claim: 'Histoire de Selvetarm : "le sang coula de sa tête... il ne bougeait plus".' },
+        { id: 'araushnee_fusion', text: 'Araushnée = fusion Loth + Aranaé séparées par Antharès ?', claim: 'Recréation de leur état originel des millénaires avant aujourd\'hui.' },
+      ]},
+      { title: '⚔️ Selvetarm & l\'Épée', questions: [
+        { id: 'selvetarm_quest', text: 'Joueurs Mori encore en quête de l\'épée de Selvetarm ?', claim: 'Mai 2026 : Drows bullies les bullies pour Selvetarm. Famille Vorn vient voir l\'épée.' },
+        { id: 'epee_loth', text: 'L\'épée = artefact de Loth/Eilistraee ?', claim: '"Je suis son outil. Je combats pour elle. Je saigne pour elle."' },
+        { id: 'menzoberra', text: 'Menzoberra (mère ténébreuse, générale Sans-Refuge) — toujours pertinente ?', claim: 'Cheffe du groupe avec qui Selvetarm tua le Balrog.' },
+      ]},
+      { title: '🐙 Illithids & Hosten Valak', questions: [
+        { id: 'siege_status', text: 'Le Siège de Hosten Valak — quel est l\'état actuel ?', claim: 'Sous siège, Valérianna défend, Nautiloïdes en approche. 3 issues possibles.' },
+        { id: 'maniel_save', text: 'Maniel Norrianiss sauvé par Bécil le nain (fin Mai 2026) ?', claim: 'Contrôlé par Illithids, isolé, sorti du portail.' },
+        { id: 'karnash_fate', text: 'Karnash et Selerahc — où en sont-ils ?', claim: 'Entrés dans le portail malgré Ilsensine. Contrôlés. Karnash sauvé par Maxor.' },
+        { id: 'oslo_state', text: 'Oslo Ventreen sous siège Illithid ?', claim: 'Banquet 2026 : "Oslo Ventreen sous siège illithid".' },
+      ]},
+      { title: '📿 Édits & Culture', questions: [
+        { id: 'huit_edits', text: '8 Édits d\'Aranaée toujours valides ?', claim: 'Loyauté, Hiérarchie, Discipline, Respect, Neutralité, Adaptation, Ennoblissement, Finesse.' },
+        { id: 'huit_arts', text: '8 arts mori (8e mystérieux) ?', claim: 'Cuisine, Musique, Chant, Danse, Marionnettiste, Blague, Théâtre, 8e art.' },
+        { id: 'tabou_7', text: 'Tabou du chiffre 7 = 8 moins 1 ?', claim: 'Toujours en parler comme 8-1. Le 8 est parfait.' },
+      ]},
+      { title: '👤 PNJs Mori', questions: [
+        { id: 'yemana_perso', text: 'Yemana Iznogood — personnalité "incompréhensible" exacte ?', claim: 'Calme, voix nasillarde aiguë, ne touche jamais (1-2 bras), ne refuse jamais du bois.' },
+        { id: 'ilyas_norrianiss', text: 'Ilyas Norrianiss — prophète actif (Joz) ?', claim: 'Annonce la venue de Vanadame en Mai 2026.' },
+        { id: 'vanadame', text: 'Vanadame Norrianiss — maître d\'armes en Mai 2026 ?', claim: 'Annoncée par le prophète. Discussion avec Karnash.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Mori manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore mori manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'lossado': {
+    icon: '🏯',
+    name: 'Lossado',
+    who: 'Alex (Daisuke), Gab',
+    sections: [
+      { title: '🏛️ Hiérarchie de la Colonie', questions: [
+        { id: 'orihara_dirigeant', text: 'Frère d\'arme Orihara Izaya = dirigeant + responsable clérical ?', claim: 'Confirmé dans hiérarchie 2024.' },
+        { id: 'conseil_4', text: 'Conseil des Quatre toujours composé de Teppei / Orihara / vacant / Mirai ?', claim: 'Militaire : Sumo Isao Teppei · Clérical : Orihara · Politique : vacant · Arcanique : Meiko Chibana Mirai.' },
+        { id: 'tresorier', text: 'Meiko Chibana Mirai encore trésorier (cachette quotidienne du coffre) ?', claim: 'Cache et change de cachette quotidiennement.' },
+        { id: 'archiviste_vacant', text: 'Poste d\'Archiviste toujours vacant ?', claim: 'Prend en notes les événements en jeu et hors-jeu.' },
+        { id: 'rekugan', text: 'Sumo Isao Teppei encore Rekugan (recrues) ?', claim: 'Confirmé.' },
+        { id: 'gouvernante', text: 'Geisha Yu Hoshino encore Gouvernante (étiquette/propreté/punitions) ?', claim: 'Confirmé.' },
+        { id: 'maitre_ombres', text: 'Maître des Ombres = l\'Ordre de l\'Ombre (aucune info) ?', claim: 'Aucune information disponible.' },
+      ]},
+      { title: '💰 Économie & Grades', questions: [
+        { id: 'soldes', text: 'Soldes : Guerrier 15 / Prêtre 10 / Mage 5 florins ?', claim: 'Chef colonie +5. Daimio ou intérim famille importante +5.' },
+        { id: 'charte_grades', text: 'Charte 1 militaire = 2 prêtrise = 3 geisha = 4 mages ?', claim: 'Mentionnée dans Hiérarchie de la Colonie.' },
+      ]},
+      { title: '🍵 Les 9 Maisons (Okias)', questions: [
+        { id: 'okias_actuelles', text: 'Les 9 Okias toujours actuelles ?', claim: 'Lotus (Aijin/Ishido), Koï (Eboushi), Bamboo (Tanaka), Rivière (Hatake), Cerisier (Isawa), Bonsaï (Doji), Origami (Otto), Chrysanthème (Iwasaki), Chibana (Nakamura/Royolo).' },
+        { id: 'isawa_defi', text: 'Famille Isawa visite + défi en Mai 2026 ?', claim: 'Mai 2026 : Visite Famille Isawa, infos + défi.' },
+      ]},
+      { title: '⚡ Mandos & Diabolos', questions: [
+        { id: 'daisuke_100lunes', text: 'Frère Marshall Nakamura Daïsuke a-t-il bien témoigné des Diabolos à sa 100e lune ?', claim: 'Mandos voulut chercher son âme. Diabolos prirent Mandos en otage.' },
+        { id: 'mandos_destroyed', text: 'Cristal de Mandos détruit en Infernis (2e grande guerre) ?', claim: 'Par les aventuriers de Royolo.' },
+      ]},
+      { title: '🐙 Illithids fabriqués', questions: [
+        { id: 'illithids_made', text: 'Les Illithids ont été fabriqués à Lossado, en morceaux ?', claim: '"Pas complets". 1er sorti en octobre 2025 lors d\'une fin de game.' },
+        { id: 'elder_brain_recup', text: 'Lossado veut récupérer son Elder Brain et ses Illithids ?', claim: 'Banquet 2026 : objectif Lossado.' },
+        { id: 'iwazaki_brain', text: 'Iwazaki a-t-il volé le cerveau du daimio Ottomo ?', claim: 'Banquet 2026.' },
+        { id: 'jiangshi_kill', text: 'Jiangshi a tué Ino Suke (samedi Mai 2026) ?', claim: 'Bu son sang avec aide des Gobelins. Réussi.' },
+      ]},
+      { title: '👥 PNJs Lossado', questions: [
+        { id: 'yi_sima', text: 'Yi Sima (Sima Yi) — visites de suivi (colonie/Elder brain/élémental d\'eau/armement/familles) ?', claim: 'Mai 2026 : peut prendre 1-2 gros bras.' },
+        { id: 'utilisateur_force', text: 'Utilisateur de la force = entité mystérieuse observant Lossado ?', claim: 'Ne parle pas, observe et apprend.' },
+        { id: 'do_kwo', text: 'Do Kwo — fiche dédiée, rôle clair ?', claim: 'Fiche existante.' },
+        { id: 'ambassadeur_isawa', text: 'Ambassadeur Isawa — rôle 2026 ?', claim: 'Fiche existante.' },
+      ]},
+      { title: '🌙 Obscur & Hélians', questions: [
+        { id: 'imperatrice_avatar', text: 'Impératrice de Lossado = avatar de l\'Obscur avec 40M priants ?', claim: 'Document Remontée d\'Eru.' },
+        { id: 'vanhastor_noctunisme', text: 'Vanhastor = Hélian de l\'intelligence, inventeur du Noctunisme ?', claim: 'À Lossado. Lien particulier.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Lossado manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore Lossado manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'pandor': {
+    icon: '⚜️',
+    name: 'Pandor',
+    who: 'Yuki, Pascal, Hugo',
+    sections: [
+      { title: '👑 Royauté & Intendance', questions: [
+        { id: 'walsingham_intendant', text: 'Walsingham 1er = intendant actuel ?', claim: '43e dans la lignée. En attendant les enfants d\'Amandril.' },
+        { id: 'amandril_libere', text: 'Amandril libéré du joug du mal et brûlé en Royolo ?', claim: 'Repose avec ses ancêtres dans la lumière, ne peut plus être corrompu.' },
+        { id: 'heritiers', text: 'Annabelle / Navara / Athéo = bons héritiers d\'Amandril ?', claim: 'Annabelle (héritière aînée), Navara (non aînée), Athéo (frère cadet, chef Ordre Pandor).' },
+        { id: 'enduril', text: 'Enduril = épée actuelle du roi de Pandor (forgée des fragments de Narsil) ?', claim: 'Les autres grands artefacts de Numénor sont perdus dans le temps.' },
+      ]},
+      { title: '🛡️ Sainte Quadriade', questions: [
+        { id: 'quadriade', text: 'Sainte-Quadriade : Eirenée + Thémis + Claudius + Arianne ?', claim: 'Anciennement Triade, Arianne s\'est rajoutée.' },
+        { id: 'eirenee_licorne', text: 'Sainte-Eirenée = Paix + Altruisme, symbole Licorne ?', claim: 'Confirmé Bible Luminis.' },
+        { id: 'themis_balance', text: 'Sainte-Thémis = Justice + Intégrité, symbole Balance ?', claim: 'Confirmé Bible Luminis.' },
+        { id: 'claudius_coupe', text: 'Saint-Claudius = Rédemption + Persévérance, symbole Coupe ?', claim: 'Premier vampire de Luminis (tué par Radu Ruansanchez), patron de l\'inquisition.' },
+        { id: 'arianne_lion', text: 'Sainte-Arianne = Bravoure + Combat, symbole Lion ?', claim: 'Possiblement mère de Krom OU jadis à droite d\'Antharès (légendes contradictoires).' },
+      ]},
+      { title: '⚖️ Lois & Ordres', questions: [
+        { id: 'six_valeurs', text: '6 valeurs cardinales : Sagesse, Charisme, Diplomatie, Foi, Justice, Honneur ?', claim: 'Bible Luminis.' },
+        { id: 'lois_pandor', text: 'Lois Pandoriennes — citoyenneté, interdictions, sanctions à jour ?', claim: 'Tribunal du clergé + inquisiteur. Confession 29 jours.' },
+        { id: 'selynor_code', text: 'Code des Chevaliers de Sélynor (8 préceptes) ?', claim: 'Atribon le Juste + Belgarian le Valeureux fondateurs.' },
+        { id: 'freres_ordre', text: 'Frères de l\'Ordre actifs (prêtres ressuscités, plan des ombres) ?', claim: '2e ordre exception qui peut toucher au mal.' },
+      ]},
+      { title: '🏛️ Politique 2026', questions: [
+        { id: 'dracius_consul', text: 'Dracius (Justin Landry) = Consul actuel ?', claim: 'Fantassin, 52 lunes, marié Boutika.' },
+        { id: 'dracius_dragons', text: 'Dracius veut créer la Guilde des Dragons Noirs ?', claim: '9e légion, spécialistes.' },
+        { id: 'dracius_evil', text: 'Dracius envisage de virer chaotique evil avec marque de Sauron ?', claim: 'Désir personnel mentionné.' },
+        { id: 'commode_role', text: 'Commode = Sénateur ou Consul ?', claim: 'Fiche dit "consul", autre source dit Sénateur. Charismatique, loyal ; glouton, pègre, froussard.' },
+        { id: 'cardinal_karianne', text: 'Cardinal Karianne — toujours en poste ?', claim: 'Clergé.' },
+      ]},
+      { title: '🌟 Élus & Aasimars', questions: [
+        { id: 'aasimars_9', text: '9 Aasimars touchés par Luminis ?', claim: 'Bible Luminis. Sang doré, peau dorée.' },
+        { id: 'elfes_solaires', text: 'Elfes Solaires décimés au 4e âge par armée d\'ogre mage ?', claim: 'En protégeant la reine d\'Amandril.' },
+      ]},
+      { title: '🎯 Trame Mai 2026', questions: [
+        { id: 'lyon_quete', text: 'Lyon DelaCroix (niveau 80) — quêtes en cours ?', claim: 'Crâne 100 âmes à Jean de Carouge, Silmarils à Minas, généalogie. Sens du devoir choix déchirants.' },
+        { id: 'aldène_chevalier', text: 'Aldène devenu chevalier en Mai 2026 ?', claim: 'Mai 2026, défense Minas Tirith.' },
+        { id: 'boutika_renouveau', text: 'Boutika a renouvelé son sacrement (Walsingham) ?', claim: 'Mai 2026.' },
+        { id: 'sainte_triade_quete', text: 'Quête Sainte Triade (Boucle/Balance/Épée + Larmes) — Kassia et Alden ?', claim: 'Larmes chaotiques + Larmes pures à trouver/créer.' },
+        { id: 'envoye_couronne', text: 'Envoyé de la Couronne pour recensement (Alfred) ?', claim: 'Identifier membres présents/quittés et raisons (procès).' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Pandor manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore Pandor manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'oz': {
+    icon: '🌈',
+    name: 'Oz',
+    who: 'Yuki',
+    sections: [
+      { title: '🏰 Identité Oz', questions: [
+        { id: 'oz_status_2026', text: 'Oz est-il "clean rien de spécial" en 2026 ?', claim: 'Banquet 2026 : "Clean, rien de spéciale (sauf Yuki, FABULOUS)".' },
+        { id: 'oz_pantheon', text: 'Le panthéon d\'Oz — quels dieux principaux ?', claim: 'Document "Quêtes panthéon Oz" (2.3 Mo) à clarifier.' },
+        { id: 'oz_palace', text: 'Structure : Palace, City, People, Temple ?', claim: 'Mentions LORE MASTER seulement.' },
+      ]},
+      { title: '🐉 Ozzoloh Ventreen', questions: [
+        { id: 'ozzoloh_lien', text: 'Ozzoloh Ventreen (dragon blanc) lié à Oz ou seulement aux Mori Norrianiss ?', claim: 'Norrianiss vivent dans la caverne du dragon blanc Ozzoloh. Lien avec Oz à clarifier.' },
+        { id: 'oz_dragons', text: 'Y a-t-il un lien officiel entre Oz et les dragons ?', claim: 'À déterminer.' },
+      ]},
+      { title: '🧪 Laboratoires Morbus', questions: [
+        { id: 'morbus_actif', text: 'Laboratoires Morbus actifs et collectent infos sur Illithids ?', claim: 'Banquet 2026 : "Collecte d\'information pour les laboratoires Morbus".' },
+        { id: 'lucius_alexis', text: 'Lucius Danezakyr (Yuki) + Chef médecin Morbus Alexis (Bibitte) ?', claim: 'Présents au Banquet 2026.' },
+        { id: 'morbus_recherche', text: 'Quel est le but réel des Laboratoires Morbus ?', claim: 'Recherche/expérimentation à clarifier.' },
+      ]},
+      { title: '🤝 Relations', questions: [
+        { id: 'oz_lossado_froid', text: 'Oz en froid avec Lossado — toujours vrai ?', claim: 'Banquet 2026.' },
+        { id: 'oz_pandor_auberge', text: 'Oz traité avec Pandor pour l\'auberge ?', claim: 'Mai 2026 : "Le Roi et Commode viennent faire leur jugement [...]. Traité avec Oz pour l\'auberge."' },
+      ]},
+      { title: '👤 PNJs Oz', questions: [
+        { id: 'selena_q1', text: 'Selena toujours active comme PNJ ?', claim: 'Mentionnée dans LORE MASTER comme PNJ Q1.' },
+        { id: 'yuki_fabulous', text: 'Yuki en personnage = FABULOUS ?', claim: 'Banquet 2026 + scénario Mai.' },
+        { id: 'oz_echoppe', text: 'Yuki à l\'échoppe et/ou sur le terrain Mai 2026 ?', claim: 'Confirmé.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Oz manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore Oz manquants ?', textOnly: true },
+        { id: 'oz_quest_2026', text: 'Quêtes Oz prévues pour 2026 ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'sables': {
+    icon: '🐪',
+    name: 'Peuple des Sables',
+    who: 'Jacinthe, Max',
+    sections: [
+      { title: '👑 Royauté & Vampires', questions: [
+        { id: 'akasha_reine', text: 'Akasha = Reine, élue d\'Osiris, vampire ?', claim: 'Élue d\'Osiris. Vampire.' },
+        { id: 'nefertiti', text: 'Néfertiti = 1ère conseillère, vampire, "plume d\'Osiris" ?', claim: 'Soeur de Mérina. Mère de Ramzès.' },
+        { id: 'ramzes_prince', text: 'Ramzès = prince vampire des sables ?', claim: 'Fils de Néfertiti.' },
+        { id: 'merina', text: 'Mérina = soeur de Néfertiti, vampire ?', claim: 'Confirmé.' },
+        { id: 'vampires_count', text: 'Moins de 20 vampires des sables existent ?', claim: 'Plusieurs millénaires d\'existence chacun. Plus jeune : Iqbal (récent trésorier).' },
+        { id: 'iqbal_jeune', text: 'Iqbal = plus jeune vampire connu, trésorier royal ?', claim: 'Récent.' },
+      ]},
+      { title: '🏛️ 4 régions politiques', questions: [
+        { id: 'couronne_symbel', text: 'Terres de la Couronne (Vizir Symbel) — Capitale + Amounaptra + Vallée interdite + Académie Thot ?', claim: '40% population.' },
+        { id: 'nord_akaton', text: 'Nord (famille Rahim, Akaton ex-El-Mouille) — Keltar + Shérazad ?', claim: 'Plus grand nombre de priants d\'Horus.' },
+        { id: 'centre_ankhara', text: 'Centre (famille Ankhara) — Tanis + Memphis ?', claim: 'Tanis ancienne capitale, Memphis grand port côte Est.' },
+        { id: 'sud_zarfar', text: 'Sud (Darius Zarfar = homme le plus riche du monde) — Miriel + Karnak + Port-au-Rhum + Abydos ?', claim: 'Plus grand nombre d\'esclaves ET de priants d\'Isis.' },
+      ]},
+      { title: '⚔️ Sacmousens', questions: [
+        { id: 'xerxes_disparu', text: 'Xerxès toujours disparu, guerre de succession ?', claim: 'Apophis dominante en territoire sacmousen depuis chute de Sauron.' },
+        { id: 'apophis_seth', text: 'Apophis domine actuellement (vs Seth) chez les Sacmousens ?', claim: 'Auparavant partagés.' },
+        { id: 'banquet_3princes', text: 'Banquet 3 princes sacmousens — morts en Mai 2026 ?', claim: 'Tués/morts à vue, finis dans tapis hors Royolo avec dague dagengy. Drakos a envoyé missive.' },
+        { id: 'maxor_akasha_mariage', text: 'Maxor a écrit à Akasha pour proposer mariage ?', claim: 'Mai 2026.' },
+      ]},
+      { title: '🌅 Cultes & Soutek', questions: [
+        { id: 'osiris_seul', text: 'Osiris seul prévaut sur l\'Ishra (cultes mineurs : Amon, Râ, Amonrâ) ?', claim: 'Confirmé Sables 101.' },
+        { id: 'soutek_brakan', text: 'Brakan de Drakiniev = 1er templier de Soutek ?', claim: 'Soutek créé par habitants de l\'avant-poste.' },
+        { id: 'isis_decorrupted', text: 'Cimetière + puit Isis décorrompus en Mai 2026 (3 cérémonies) ?', claim: 'Drakos 117, Malak min 50, Maxor Jr 10. Corruption terminée.' },
+      ]},
+      { title: '🏺 Couronne & Joyau de Manwë', questions: [
+        { id: 'ratelle_couronne', text: 'Ratelle Ti-poil a rapporté la couronne à Numénor (et marteau Bécil) ?', claim: 'Mai 2026. Forge Bécil 30 min, approuvée par Mathieux.' },
+        { id: 'couronne_pas_benie', text: 'La couronne N\'EST PAS bénie (joueurs n\'ont pas dit "Par le pouvoir de... Bénédiction") ?', claim: 'Conséquence à voir.' },
+      ]},
+      { title: '⚖️ 16 Lois de la Maât', questions: [
+        { id: 'maat_16_actives', text: '16 Lois de la Maât toujours en vigueur ?', claim: 'Apportées de l\'ancienne Kalindra.' },
+        { id: 'esclaves_serfs', text: 'Distinction Esclaves vs Serfs encore valable ?', claim: 'Esclaves : à perpétuité. Serfs : services à vie contre rémunération. Mobilité possible.' },
+        { id: 'polygamie_ok', text: 'Polygamie/polyandrie acceptées (Akasha + Néfertiti ont harems) ?', claim: 'Confirmé Sables 101.' },
+      ]},
+      { title: '👤 PNJs Sables', questions: [
+        { id: 'lilith_repr', text: 'Lilith Cromwell Harfez = représentante de l\'avant-poste ?', claim: 'A envoyé missives à Estriak (7 fév) et capitale (5 fév) sur Banquet Iznogood.' },
+        { id: 'estriak_louy', text: 'Estriak (joué par Louy) — toujours actif ?', claim: 'Mentions multiples.' },
+        { id: 'darius_flotepas', text: 'Darius Flotepas — fiche dédiée, rôle ?', claim: 'Fiche existante.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Sables manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'numenor': {
+    icon: '⚓',
+    name: 'Numénor',
+    who: 'Catherine Cusson',
+    sections: [
+      { title: '👑 Lignée & Histoire', questions: [
+        { id: 'walsingham_pandor', text: 'Walsingham 1er = intendant Pandor (43e dans la lignée Gondor → Pandor) ?', claim: 'Demi-frère d\'Amandril.' },
+        { id: 'aragorn3_eldo', text: 'Aragorn III (= Ross Oakenshield = réincarnation Aragorn II) = Roi d\'Eldoriath, PAS de Pandor ?', claim: 'Marié à Arwen.' },
+        { id: 'isildor_couronnement', text: 'Couronnement Isildor (Mai 2026) — Roi d\'un bâton et 40 marins ?', claim: 'Couronne n\'a pas allumé (pas vu qu\'elle devait pour être digne).' },
+        { id: 'isildor_consequence', text: 'Quelle conséquence pour Isildor de la couronne non-allumée ?', claim: 'Mentionné dans debrief : "voir pour une conséquence".' },
+        { id: 'ezekiel_seigneur', text: 'Ezekiel devenu seigneur en Mai 2026 ?', claim: 'Confirmé scénario Mai.' },
+      ]},
+      { title: '🏔️ Île de Numénor', questions: [
+        { id: '6_regions', text: '6 régions de l\'île correctes (5 branches + Mittalmar) ?', claim: 'Forostar, Andustar, Hyarnustar, Hyarrostar, Orrostar, Mittalmar.' },
+        { id: 'maisons_6', text: '6 Maisons : Tarnel, Kardil, l\'Arche, Aldarion, Keffenn, Valamyr ?', claim: 'Avec Maison des Rois (Mittalmar).' },
+        { id: 'meneltarma', text: 'Meneltarma = sanctuaire d\'Eru, seuls les rois peuvent parler au sommet ?', claim: 'Pilier des Cieux. Tombes des rois à la base.' },
+        { id: 'flambeaux_7', text: '7 grands flambeaux du palais (torche d\'Aulë origine) ?', claim: 'Tous éteints par Sauron sauf Manwë (jamais éteint).' },
+      ]},
+      { title: '🌊 Destruction de Numénor', questions: [
+        { id: 'destruction_4', text: '4 figures de la destruction : Eru (pouvoir) + Manwë (ouragan) + Ulmo (tsunami) + Nessa (vitesse) ?', claim: 'Confirmé Numénor 1024.' },
+        { id: 'erreurs_5', text: '5 erreurs des Elfes envers Numénor ?', claim: 'Immortalité, politique, distance, idéalisation Aman, Sauron.' },
+        { id: 'fideles', text: 'Fidèles vs Hommes du Roi — encore pertinent dans le lore actuel ?', claim: 'Fidèles à Rómenna avant la chute, ont fui avec Elendil.' },
+      ]},
+      { title: '⚔️ Quêtes Valar Mai 2026', questions: [
+        { id: 'quete_ulmo_4parts', text: 'Quête Ulmo : bénir bénitier + corne + rivière Kohaku + Haku ?', claim: 'Mai 2026 : envoyé d\'Ulmo. Cric en charge.' },
+        { id: 'ezekiel_tulkas', text: 'Ezekiel quête prestige Tulkas — sanctuaire ancien Horde du Chaos ?', claim: 'Niveau 32, 5 levels en retard.' },
+        { id: 'yavanna_reveille', text: 'Yavana réveillée en Mai 2026 (cérémonie du printemps) ?', claim: 'Élanoriens présents, Numénor (Aramil très présent), pas de nain.' },
+        { id: 'arbre_numenor', text: 'Arbre de Numénor à protéger — première quête : trouver l\'arbre ?', claim: 'PNJ et joueurs ne savaient pas où.' },
+      ]},
+      { title: '👥 PNJs Numénor', questions: [
+        { id: 'aramil_archpretre', text: 'Aramil = Arch prêtre des Valars (Eldoriath et Valinor) ?', claim: 'Versions 50 lunes et pré-50 lunes existent.' },
+        { id: 'becil_forge', text: 'Bécil le nain = forgeron de la couronne de Manwë + sauveur de Maniel ?', claim: 'Mai 2026 : forge 30 min approuvée par Mathieux. Sauve Maniel du portail Illithid.' },
+        { id: 'iris_morte', text: 'Iris (Zazou) = feue mage élue d\'Ulmo, prise par plan des morts de Simorgh ?', claim: 'Avait renvoyé les Silmarils à leurs places précédentes après Feanor mort-vivant.' },
+        { id: 'jacob_simon', text: 'Jacob et Simon — quêtes de classe encore actives ?', claim: 'Document existe.' },
+      ]},
+      { title: '🌫️ Dunédains', questions: [
+        { id: 'dunedains_lifespan', text: 'Dunédains vivent 150-250 ans en moyenne ?', claim: 'Aragorn II atteignit 300+ ans.' },
+        { id: 'dunedains_pds', text: 'Communauté Dunédains au Peuple des Sables (rumeur) ?', claim: '"Pupille de Numenor" = surnom d\'un noble.' },
+        { id: 'numenoriens_noirs', text: 'Numénoriens noirs servants de Sauron au Mordor — toujours actifs ?', claim: 'Très peu nombreux mais très puissants.' },
+      ]},
+      { title: '🏛️ Pandor (continuité)', questions: [
+        { id: '43_rois', text: '43 rois historiques du Gondor → Pandor ?', claim: 'De Elendil à Walsingham 1er.' },
+        { id: 'jean_francois', text: 'Jean-François 1er "roi fantôme" — règne de 400+ ans ?', claim: 'Tombeau en Royolo. 39e roi.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Numénor manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'nazzakri': {
+    icon: '👁️',
+    name: 'Nazzakri (Orcs)',
+    who: 'Benoît (Estann), Cric, Pat',
+    sections: [
+      { title: '⚔️ 4 Grands Clans', questions: [
+        { id: 'oeil_sauron', text: 'Clan de l\'Œil — Barak Dûr, Sauron dirigeant ?', claim: 'Douves de lave de l\'Orodruin, construction 600 ans.' },
+        { id: 'morgul_complet', text: 'Clan Morgul — Roi Sorcier d\'Angmar + Gothmog (stratège) + Gar\'Tang (shaman aveugle) ?', claim: 'Esprits Air et Terre. Feelbeasts. Vallée de Morgul.' },
+        { id: 'profanateur_complet', text: 'Clan Profanateur — Dol Guldur, Azog + Malik Urbar (shaman blanc) ?', claim: 'Forêt Noire NW. Cavaliers wargs. Esprit Terre majeur.' },
+        { id: 'enchaine_complet', text: 'Clan Enchaîné — Guruk-Targ, Garg-Tar Poings-de-chaînes ?', claim: 'Nurmen. Seul lac du Mordor. Ogres, trolls, caragors, Graugs.' },
+      ]},
+      { title: '⚔️ 4 Clans Mineurs', questions: [
+        { id: 'ecorcheur', text: 'Écorcheur — Gundhabad, Bolg cannibale (fils Azog) ?', claim: 'Mange cœur/cerveau. Maladies développées.' },
+        { id: 'warg_sombre', text: 'Warg Sombre — Cirith Ungol (Darz-Gurum), Crishnak le borgne ?', claim: 'Excellents éclaireurs. Caragors, Graugs, Ghuls sauvages.' },
+        { id: 'mort_blanche', text: 'Mort Blanche — Lurtz arc de l\'ombre, nomade ?', claim: 'Uruk-kaï secrets de Saroumane. Bombes orcs.' },
+        { id: 'ravageurs', text: 'Ravageurs — Umbar (ruines), Marg le puissant + Irtoum (shaman eau) ?', claim: 'Seul accès maritime. Raids côtes pandoriennes.' },
+      ]},
+      { title: '🪐 Joueurs & Factions 2026', questions: [
+        { id: 'maxor_general', text: 'Maxor Jr s\'est-il bien déclaré général de Morgoth (Banquet 2026) ?', claim: 'Mentionné explicitement dans Debrief.' },
+        { id: 'maxor_tampo', text: 'Maxor Jr et Tampo ont acclamé Sauron (Mai 2026) ?', claim: 'Voir fiche debriefing PNJ.' },
+        { id: 'truite_syndicat', text: 'Syndicat des gobelins (Truite) — toujours actif avec 110% intérêt ?', claim: 'Mai 2026 : joueurs ont volé quand même, Truite prenait 110%.' },
+        { id: 'niz_artefact', text: 'Niz a un artefact corrompu par Sauron à décorrompre ?', claim: 'Mai 2026 : Entité Kashtrya a donné 2 artefacts (1 sain, 1 corrompu).' },
+        { id: 'bloom_succube', text: 'Bloom devenue Succube via démon drèche ?', claim: 'Quête perso fin de classe prêtresse Darkness 15e niveau. Dimanche Mai 2026.' },
+      ]},
+      { title: '🌑 Captures Illithids', questions: [
+        { id: 'persephone', text: 'Persephone capturée par Illithids ?', claim: 'Banquet 2026.' },
+        { id: 'hyela', text: 'Hyela (chef amazon) capturée ?', claim: 'Banquet 2026.' },
+        { id: 'rhukx', text: 'Rhukx (chef hommes lézard, lien orcs verts) capturé ?', claim: 'Banquet 2026.' },
+        { id: 'mines_de_brume', text: 'Mines de la famille De Brume perdues aux Illithids ?', claim: 'Pierres précieuses.' },
+      ]},
+      { title: '🛐 Seigneurs Noirs (liens)', questions: [
+        { id: 'simorgh_yavanna', text: 'Simorgh = lié à Yavanna (Aratar) et Estë (Vala) ?', claim: 'Document liens Seigneurs Noirs.' },
+        { id: 'cardinal_septs', text: 'Cardinal des Septs (Cirbex et Roberte) — quête anneaux Sauron ?', claim: 'Broderie + 6 chandelles à la main. Énigme feu et eau. Plusieurs lunes.' },
+        { id: 'antares_oromer', text: 'Antarès = lié à Oromë (Aratar) et Vairë (Vala) ?', claim: 'Document liens.' },
+      ]},
+      { title: '🐍 Plans & Quêtes', questions: [
+        { id: 'amazones_corbeaux', text: 'Amazones veulent renaître clan Corbeaux (Simorgh, œuf d\'autruche nécrotique) ?', claim: 'À faire en Juin 2026.' },
+        { id: 'cric_stat', text: 'Cric chez Stat — maladie à assimiler ?', claim: 'Mai 2026.' },
+        { id: 'disciple_danasar', text: 'Disciple de Danasar — voir priants ?', claim: 'À faire plus tard.' },
+        { id: 'jeune_skaven', text: 'Le jeune transformé en Skaven (enfant de Gobelin) ?', claim: 'Samedi Mai 2026.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Nazzakri manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'elfes': {
+    icon: '🌳',
+    name: 'Elfes / Eldoriath',
+    who: 'Catherine Cusson, Math',
+    sections: [
+      { title: '👑 Royauté Eldoriath', questions: [
+        { id: 'elessar_arwen', text: 'Roi Elessar Singolo + Reine Arwen — toujours en place ?', claim: 'Couple royal Eldoriath.' },
+        { id: 'aragorn3', text: 'Aragorn III (= Ross Oakenshield = réincarnation Aragorn II) = Roi d\'Eldoriath ?', claim: 'PAS de Pandor. A épousé Arwen.' },
+      ]},
+      { title: '🌟 Élus des Valars', questions: [
+        { id: 'iris_morte', text: 'Iris (Zazou) — décédée, prise par plan des morts de Simorgh ?', claim: 'Élue d\'Ulmo. Avait renvoyé les Silmarils à leurs places après Feanor mort-vivant.' },
+        { id: 'filiel_aule', text: 'Filiel Thel Amarth (Noldor de Tol Hotas) = élu d\'Aulë ?', claim: 'Confirmé.' },
+        { id: 'damien_irmo', text: 'Damien = futur élu d\'Irmo ?', claim: 'Grand prêtre de Tol Hotas.' },
+        { id: 'sid_este', text: 'Sid Felaegun = 1er prêtre d\'Estë depuis longtemps ?', claim: 'An 4 ère des hommes en Royolo.' },
+        { id: 'aramil_versions', text: 'Aramil = Arch prêtre des Valars (versions pré et post 50 lunes) ?', claim: 'Eldoriath et Valinor.' },
+        { id: 'tiltowe_yavanna', text: 'Tiltowë = hiérophante de Yavanna ?', claim: 'Confirmé.' },
+        { id: 'helena_yavanna', text: 'Héléna = princesse élue de Yavanna ?', claim: 'Confirmé.' },
+        { id: 'oromer_elu', text: 'Y a-t-il un élu d\'Oromë actuel ?', claim: 'À déterminer.' },
+        { id: 'manwe_elu', text: 'Y a-t-il un élu de Manwë actuel ?', claim: 'À déterminer.' },
+      ]},
+      { title: '🏰 Eldoriath & Tol Hotas', questions: [
+        { id: 'tol_hotas', text: 'Tol Hotas Synia Sorno = forge d\'Aulë devenue forteresse ?', claim: 'Mention dans la liste des lieux.' },
+        { id: 'thenidiel_quete', text: 'Thénidiel (Alice) en charge de "Make Eldo Great Again" ?', claim: 'Phase 1 : peindre roche elfique + bannières. Banquet/jam Juin.' },
+      ]},
+      { title: '🌿 Cérémonies Mai 2026', questions: [
+        { id: 'printemps_yavana', text: 'Cérémonie du printemps a réveillé Yavana ?', claim: 'Élanoriens, Numénor (Aramil), pas de nain.' },
+        { id: 'arbre_numenor', text: 'Cérémonie pour protéger l\'arbre de Numénor — première quête trouver l\'arbre ?', claim: 'PNJ et joueurs ne savaient pas où.' },
+        { id: 'partage_savoir', text: 'Partage de connaissances / rééducation (maître du savoir) prévu Juin ?', claim: 'À voir.' },
+      ]},
+      { title: '🥚 4 Œufs Thaumaturgiques', questions: [
+        { id: 'oeufs_4_sages', text: '4 sages elfiques (Aquma, Nûna, Gawa, 4e inconnu) — âmes dans 4 œufs ?', claim: 'Tome 3 du Livre du Savoir. Lors guerre Venger/Seth/Antharès au tombeau de Fenor.' },
+        { id: '4e_sage', text: 'Le 4e sage — son nom est-il connu ou toujours mystère ?', claim: 'À déterminer.' },
+        { id: 'oeufs_localisation', text: 'Statut/localisation des 4 œufs philosophaux en 2026 ?', claim: 'À déterminer.' },
+      ]},
+      { title: '🏛️ Histoire elfique', questions: [
+        { id: 'erreurs_5', text: '5 erreurs des Elfes envers Numénor — connues des elfes actuels ?', claim: 'Immortalité, politique, distance, idéalisation Aman, Sauron.' },
+        { id: 'cuiviénen', text: 'Lac Cuiviénen = lieu d\'éveil des Eldar (Premiers-Nés) ?', claim: 'Mythologie originelle. Aujourd\'hui chez les Duergars.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Elfes manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
+  'nains': {
+    icon: '⚒️',
+    name: 'Nains / Khazad',
+    who: 'Catherine Cusson, Josué, Math',
+    sections: [
+      { title: '⛏️ Cosmologie naine', questions: [
+        { id: 'aule_createur', text: 'Aulë (Mahal) = créateur des Sept Pères des Nains ?', claim: 'Bénis par Eru, dormaient jusqu\'à éveil des Premiers-Nés.' },
+        { id: '2_valars_nains', text: 'Quels sont les 2 Valars que les nains peuvent prier ?', claim: 'Aulë + ? À confirmer (mention Update Nains).' },
+        { id: 'magie_runique', text: 'Magie runique temporaire = forge ET broderie (femmes) ?', claim: 'Confirmé Update Nains.' },
+      ]},
+      { title: '💍 Bagues de Sauron', questions: [
+        { id: '9_bagues', text: '9 Bagues Naines de Sauron — où sont-elles ?', claim: 'Update Nains mentionne 9 bagues mais sans détails.' },
+        { id: 'bagues_actuelles', text: 'Statut actuel des bagues — possédées, perdues, détruites ?', claim: 'À déterminer.' },
+      ]},
+      { title: '🏰 Familles naines (Khazad)', questions: [
+        { id: 'familles_principales', text: 'Quelles sont les principales familles naines actuelles ?', claim: 'Document existe mais à développer (basé sur Tolkien).' },
+        { id: 'erebor_moria', text: 'Erebor + Moria — toujours pertinents dans le lore actuel ?', claim: 'Polices de langue distinctes (KhuzdulErebor, Moria Font).' },
+      ]},
+      { title: '🌑 Nains Noirs de Crom', questions: [
+        { id: 'astragoth_legion', text: 'Astragoth Main-de-Métal = chef de la Légion (forgerons) ?', claim: 'Crée armements, armures, bêtes métalliques, engins de guerre.' },
+        { id: 'drazhoath_disciples', text: 'Drazhoath Flamme-Éternelle = chef des Disciples (prêtrise) ?', claim: 'Alimente bêtes créées par la Légion. Flamme éternelle.' },
+        { id: 'zhatan_hotes', text: 'Zhatan Le-Noir = chef des Hôtes de Guerres (militaire) ?', claim: 'Premiers au combat, derniers à sortir.' },
+        { id: 'havrid_kherguellan', text: 'Havrid Kherguellan = noble qui a perdu ses 3 familles ?', claim: 'Refondue avec aide de Crom. Gestion du grand conseil (Conclave).' },
+        { id: 'famille_5e', text: 'Possibilité d\'établir une 5e famille (joueurs) ?', claim: 'Mentionné dans les quêtes possibles.' },
+      ]},
+      { title: '⚒️ Quêtes Nains 2026', questions: [
+        { id: 'becil_couronne', text: 'Bécil = forgeron qui a forgé la couronne de Manwë ?', claim: 'Mai 2026. 30 min, approuvé par Mathieux.' },
+        { id: 'becil_sauve', text: 'Bécil a sauvé Maniel Norrianiss du portail Illithid ?', claim: 'Fin de game Mai 2026.' },
+        { id: 'horgar_quete', text: 'Roi Duergar Horgar Ombre-acier (lac Cuiviénen) = quête métal vivant ?', claim: 'Quantité : 1 armure complète + 1 épée. 3 issues possibles.' },
+        { id: 'horgar_anatar', text: 'Émissaire anonyme (Anatar?) pousse Horgar à exclusivité ?', claim: 'Métal pour peuples "forts" + armée.' },
+        { id: '15_freres', text: '15 frères nains à récupérer (missive juillet) ?', claim: 'Banquet 2026 : attaque dans les mines.' },
+      ]},
+      { title: '🤝 Relations 2026', questions: [
+        { id: 'commode_dette', text: 'Nains détestent Pandor (dette d\'armures de Commode) ?', claim: 'Banquet 2026 : armures commandées jamais payées.' },
+        { id: 'nain_eldoriath', text: 'Pas de nain au Cérémonie du printemps Mai 2026 (Eldoriath) ?', claim: 'Mentionné explicitement.' },
+      ]},
+      { title: '🆓 Ajouts libres', questions: [
+        { id: 'add_pnj', text: 'PNJs Nains manquants ou nouveaux ?', textOnly: true },
+        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
+      ]},
+    ]
+  },
+
 };
 
+// ============================================================
+// STATE
+// ============================================================
+let state = {};
+try { state = JSON.parse(localStorage.getItem('fleau_challenge_v2') || '{}'); } catch(e) { state = {}; }
+let currentPeople = null;
+
+// ============================================================
+// UTILS
+// ============================================================
 function escapeHtml(s) {
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
-function save() {
-  localStorage.setItem('fleau_synthesis_v1', JSON.stringify(received));
+function escapeAttr(s) {
+  return String(s||'').replace(/'/g, "\\'");
 }
 
-function toast(msg, isError) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.toggle('error', !!isError);
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-function addJSON(json) {
-  let parsed;
-  try {
-    parsed = typeof json === 'string' ? JSON.parse(json) : json;
-  } catch(e) {
-    toast('❌ JSON invalide : ' + e.message, true);
-    return false;
-  }
-  if (!parsed.peuple_id || !parsed.réponses) {
-    toast('❌ Format invalide (manque peuple_id ou réponses)', true);
-    return false;
-  }
-  received[parsed.peuple_id] = parsed;
-  save();
-  renderReceived();
-  renderSummary();
-  toast(`✅ ${parsed.peuple} importé`);
-  return true;
-}
-
-function addPastedJSON() {
-  const text = document.getElementById('json-paste').value.trim();
-  if (!text) { toast('Coller un JSON d\'abord', true); return; }
-  if (addJSON(text)) {
-    document.getElementById('json-paste').value = '';
-  }
-}
-
-function deleteOne(key) {
-  if (!confirm(`Effacer les réponses de ${received[key].peuple} ?`)) return;
-  delete received[key];
-  save();
-  renderReceived();
-  renderSummary();
-  toast('🗑️ Effacé');
-}
-
-function clearAll() {
-  if (!confirm('Effacer TOUTES les réponses importées ?')) return;
-  received = {};
-  save();
-  renderReceived();
-  renderSummary();
-  document.getElementById('report-output').textContent = '';
-  toast('🗑️ Tout effacé');
-}
-
-function renderReceived() {
-  const list = document.getElementById('received-list');
-  const keys = Object.keys(received);
-  if (keys.length === 0) {
-    list.innerHTML = '<div class="empty">Aucune réponse importée pour l\'instant.</div>';
-    document.getElementById('summary-section').style.display = 'none';
-    document.getElementById('report-section').style.display = 'none';
-    return;
-  }
-  list.innerHTML = `<div class="received-grid">${keys.map(k => {
-    const r = received[k];
-    const stats = countStats(r);
+// ============================================================
+// RENDER PICKER
+// ============================================================
+function renderPicker() {
+  const picker = document.getElementById('picker');
+  picker.innerHTML = Object.entries(PEOPLES).map(([key, p]) => {
+    const pct = computeProgress(key);
+    const cls = pct === 0 ? 'zero' : (pct < 100 ? 'partial' : 'full');
     return `
-      <div class="received-card ${stats.pct === 100 ? 'complete' : ''}">
-        <button class="delete-btn" onclick="deleteOne('${k}')" title="Effacer">×</button>
-        <span class="icon">${PEOPLE_ICONS[k] || '📋'}</span>
-        <span class="name">${escapeHtml(r.peuple)}</span>
-        <div class="meta">${escapeHtml(r.scénariste || '')}</div>
-        <div class="meta">📅 ${new Date(r.date_export).toLocaleDateString('fr-CA')}</div>
-        <div class="stats">
-          <span style="color:#4dae5e;">✅ ${stats.confirmed}</span>
-          <span style="color:#ae4d4d;">❌ ${stats.obsolete}</span>
-          <span style="color:#c9a96e;">🔄 ${stats.updated}</span>
-          <span style="color:#888;">❓ ${stats.unknown}</span>
-        </div>
-        <div class="stats" style="margin-top:4px;">📊 ${stats.pct}% complété (${stats.total} questions)</div>
+      <div class="ppl" onclick="selectPeople('${key}')">
+        <div class="ppl-progress ${cls}">${pct}%</div>
+        <div class="icon">${p.icon}</div>
+        <div class="name">${escapeHtml(p.name)}</div>
+        <div class="who">${escapeHtml(p.who)}</div>
       </div>
     `;
-  }).join('')}</div>`;
-  document.getElementById('summary-section').style.display = 'block';
-  document.getElementById('report-section').style.display = 'block';
+  }).join('');
 }
 
-function countStats(r) {
-  let confirmed = 0, obsolete = 0, updated = 0, unknown = 0, libre = 0, total = 0;
-  Object.values(r.réponses).forEach(section => {
-    Object.values(section).forEach(q => {
-      total++;
-      if (q.statut === 'confirmed') confirmed++;
-      else if (q.statut === 'obsolete') obsolete++;
-      else if (q.statut === 'updated') updated++;
-      else if (q.statut === 'unknown') unknown++;
-      else if (q.statut === 'libre') libre++;
-    });
-  });
-  return { confirmed, obsolete, updated, unknown, libre, total, pct: r.progression_pct || 0 };
-}
-
-function renderSummary() {
-  const keys = Object.keys(received);
-  if (keys.length === 0) return;
-  let totals = { confirmed: 0, obsolete: 0, updated: 0, unknown: 0, libre: 0, total: 0 };
-  keys.forEach(k => {
-    const s = countStats(received[k]);
-    totals.confirmed += s.confirmed;
-    totals.obsolete += s.obsolete;
-    totals.updated += s.updated;
-    totals.unknown += s.unknown;
-    totals.libre += s.libre;
-    totals.total += s.total;
-  });
-  document.getElementById('summary').innerHTML = `
-    <div class="stat-box"><div class="stat-num">${keys.length}</div><div class="stat-label">Peuples reçus</div></div>
-    <div class="stat-box"><div class="stat-num">${totals.total}</div><div class="stat-label">Questions répondues</div></div>
-    <div class="stat-box" style="border-left-color:#4dae5e;"><div class="stat-num" style="color:#4dae5e;">${totals.confirmed}</div><div class="stat-label">✅ Confirmés</div></div>
-    <div class="stat-box" style="border-left-color:#ae4d4d;"><div class="stat-num" style="color:#ae4d4d;">${totals.obsolete}</div><div class="stat-label">❌ Obsolètes</div></div>
-    <div class="stat-box" style="border-left-color:#c9a96e;"><div class="stat-num" style="color:#c9a96e;">${totals.updated}</div><div class="stat-label">🔄 À jour</div></div>
-    <div class="stat-box" style="border-left-color:#888;"><div class="stat-num" style="color:#888;">${totals.unknown}</div><div class="stat-label">❓ Inconnus</div></div>
-    <div class="stat-box" style="border-left-color:#7a5fc7;"><div class="stat-num" style="color:#a07fe7;">${totals.libre}</div><div class="stat-label">📝 Libres</div></div>
+// ============================================================
+// RENDER APP
+// ============================================================
+function renderApp(key) {
+  const p = PEOPLES[key];
+  if (!p) return;
+  const container = document.getElementById('apps-container');
+  let qNum = 0;
+  container.innerHTML = `
+    <div class="app active">
+      <div class="app-header">
+        <div class="app-title">${p.icon} ${escapeHtml(p.name)}</div>
+        <div class="app-meta">Scénariste(s) : ${escapeHtml(p.who)}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${computeProgress(key)}%"></div></div>
+        <div class="progress-text">${computeProgress(key)}% complété</div>
+      </div>
+      ${p.sections.map(sec => {
+        const secProgress = sectionProgress(key, sec);
+        return `
+          <div class="section">
+            <div class="section-title">
+              ${escapeHtml(sec.title)}
+              <span class="section-counter">${secProgress.done}/${secProgress.total}</span>
+            </div>
+            ${sec.questions.map(q => {
+              qNum++;
+              return renderQuestion(key, q, qNum);
+            }).join('')}
+          </div>
+        `;
+      }).join('')}
+    </div>
   `;
 }
 
-function generateReport() {
-  const keys = Object.keys(received);
-  if (keys.length === 0) { toast('Aucune réponse à traiter', true); return; }
+function renderQuestion(peopleKey, q, qNum) {
+  const ans = (state[peopleKey] && state[peopleKey][q.id]) || {};
+  const isAnswered = ans.status || ans.text;
+  const safeId = `${peopleKey}_${q.id}`;
 
-  let md = `# 📚 RAPPORT DE CONSOLIDATION — TOME FLÉAU v4.0\n\n`;
-  md += `**Date de génération :** ${new Date().toLocaleString('fr-CA')}\n`;
-  md += `**Peuples consultés :** ${keys.length}/9\n`;
-  md += `**Compilation pour Josué Boisjoli (Scribe du Codex)**\n\n`;
-  md += `---\n\n`;
-
-  // Section TL;DR
-  md += `## 🎯 TL;DR — Actions prioritaires pour le Tome v4.0\n\n`;
-  let totalObsolete = 0, totalUpdated = 0, totalLibre = 0;
-  keys.forEach(k => {
-    const s = countStats(received[k]);
-    totalObsolete += s.obsolete;
-    totalUpdated += s.updated;
-    totalLibre += s.libre;
-  });
-  md += `- **${totalObsolete}** affirmations à **supprimer/réviser** (marquées obsolètes)\n`;
-  md += `- **${totalUpdated}** affirmations à **mettre à jour** avec nouvelles infos\n`;
-  md += `- **${totalLibre}** **ajouts libres** à intégrer (nouveaux PNJs, lore, etc.)\n\n`;
-  md += `---\n\n`;
-
-  // Section critique : OBSOLÈTES
-  md += `## ❌ ZONE ROUGE — Affirmations OBSOLÈTES (à corriger en priorité)\n\n`;
-  let hasObs = false;
-  keys.forEach(k => {
-    const r = received[k];
-    let pHas = false;
-    Object.entries(r.réponses).forEach(([secTitle, section]) => {
-      Object.entries(section).forEach(([qid, q]) => {
-        if (q.statut === 'obsolete') {
-          if (!pHas) {
-            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
-            pHas = true;
-            hasObs = true;
-          }
-          md += `**${secTitle}**\n`;
-          md += `> ❓ ${q.question}\n`;
-          if (q.tome_v3_dit) md += `> 📜 *Tome v3 disait :* ${q.tome_v3_dit}\n`;
-          if (q.précision) md += `> ❌ **Pourquoi obsolète :** ${q.précision}\n`;
-          md += `\n`;
-        }
-      });
-    });
-  });
-  if (!hasObs) md += `*Aucune affirmation marquée obsolète. ✅*\n\n`;
-  md += `---\n\n`;
-
-  // Section : MISES À JOUR
-  md += `## 🔄 ZONE AMBRE — Mises à jour à intégrer\n\n`;
-  let hasUpd = false;
-  keys.forEach(k => {
-    const r = received[k];
-    let pHas = false;
-    Object.entries(r.réponses).forEach(([secTitle, section]) => {
-      Object.entries(section).forEach(([qid, q]) => {
-        if (q.statut === 'updated') {
-          if (!pHas) {
-            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
-            pHas = true;
-            hasUpd = true;
-          }
-          md += `**${secTitle}**\n`;
-          md += `> ❓ ${q.question}\n`;
-          if (q.tome_v3_dit) md += `> 📜 *Tome v3 disait :* ${q.tome_v3_dit}\n`;
-          if (q.précision) md += `> 🔄 **Version à jour :** ${q.précision}\n`;
-          md += `\n`;
-        }
-      });
-    });
-  });
-  if (!hasUpd) md += `*Aucune mise à jour. ✅*\n\n`;
-  md += `---\n\n`;
-
-  // Section : AJOUTS LIBRES
-  md += `## 📝 AJOUTS LIBRES — Nouveau contenu à intégrer\n\n`;
-  let hasFree = false;
-  keys.forEach(k => {
-    const r = received[k];
-    let pHas = false;
-    Object.entries(r.réponses).forEach(([secTitle, section]) => {
-      Object.entries(section).forEach(([qid, q]) => {
-        if (q.statut === 'libre' && q.précision) {
-          if (!pHas) {
-            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
-            pHas = true;
-            hasFree = true;
-          }
-          md += `**${secTitle} — ${q.question}**\n\n`;
-          md += `> ${q.précision.split('\n').join('\n> ')}\n\n`;
-        }
-      });
-    });
-  });
-  if (!hasFree) md += `*Aucun ajout libre. ✅*\n\n`;
-  md += `---\n\n`;
-
-  // Section : INCONNUS
-  md += `## ❓ ZONE GRISE — Affirmations marquées INCONNUES\n\n`;
-  md += `*Le scénariste n'est pas certain de la véracité. À investiguer.*\n\n`;
-  let hasUnk = false;
-  keys.forEach(k => {
-    const r = received[k];
-    let pHas = false;
-    Object.entries(r.réponses).forEach(([secTitle, section]) => {
-      Object.entries(section).forEach(([qid, q]) => {
-        if (q.statut === 'unknown') {
-          if (!pHas) {
-            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
-            pHas = true;
-            hasUnk = true;
-          }
-          md += `- ${q.question}\n`;
-          if (q.tome_v3_dit) md += `  - *Tome v3 :* ${q.tome_v3_dit}\n`;
-        }
-      });
-    });
-    if (pHas) md += `\n`;
-  });
-  if (!hasUnk) md += `*Aucune zone grise. ✅*\n\n`;
-  md += `---\n\n`;
-
-  // Section : CONFIRMATIONS (résumé seulement)
-  md += `## ✅ ZONE VERTE — Affirmations CONFIRMÉES (résumé par peuple)\n\n`;
-  keys.forEach(k => {
-    const r = received[k];
-    const s = countStats(r);
-    md += `- **${PEOPLE_ICONS[k]} ${r.peuple}** : **${s.confirmed}** affirmations confirmées sur ${s.total} questions\n`;
-  });
-  md += `\n---\n\n`;
-
-  // Section : Peuples NON RÉPONDUS
-  const allPeoples = ['moriquendi', 'lossado', 'pandor', 'oz', 'sables', 'numenor', 'nazzakri', 'elfes', 'nains'];
-  const missing = allPeoples.filter(p => !received[p]);
-  if (missing.length > 0) {
-    md += `## ⚠️ Peuples non encore consultés\n\n`;
-    missing.forEach(m => {
-      md += `- ${PEOPLE_ICONS[m]} ${m.charAt(0).toUpperCase() + m.slice(1)}\n`;
-    });
-    md += `\n---\n\n`;
+  if (q.textOnly) {
+    return `
+      <div class="question ${isAnswered ? 'answered' : ''}">
+        <div class="q-number">Q${qNum} — Réponse libre</div>
+        <div class="q-text">${escapeHtml(q.text)}</div>
+        <textarea
+          id="ta_${safeId}"
+          placeholder="Ta réponse libre..."
+          oninput="setAnswer('${peopleKey}','${q.id}','text',this.value)"
+        >${escapeHtml(ans.text || '')}</textarea>
+      </div>
+    `;
   }
 
-  md += `## 📋 Détail complet par peuple\n\n`;
-  keys.forEach(k => {
-    const r = received[k];
-    md += `### ${PEOPLE_ICONS[k]} ${r.peuple}\n\n`;
-    md += `**Scénariste(s) :** ${r.scénariste}\n`;
-    md += `**Date :** ${new Date(r.date_export).toLocaleString('fr-CA')}\n`;
-    md += `**Progression :** ${r.progression_pct}%\n\n`;
+  const showSubText = ans.status === 'updated' || ans.status === 'obsolete';
+  const subLabel = ans.status === 'obsolete' ? '❌ Pourquoi obsolète ?' : '🔄 Version à jour :';
 
-    Object.entries(r.réponses).forEach(([secTitle, section]) => {
-      const qList = Object.entries(section);
-      if (qList.length === 0) return;
-      md += `#### ${secTitle}\n\n`;
-      qList.forEach(([qid, q]) => {
-        const emoji = { confirmed: '✅', obsolete: '❌', updated: '🔄', unknown: '❓', libre: '📝' }[q.statut] || '•';
-        md += `${emoji} **${q.question}**\n`;
-        if (q.précision) md += `   ↳ ${q.précision.split('\n').join('\n   ')}\n`;
-        md += `\n`;
-      });
-    });
-    md += `---\n\n`;
-  });
-
-  md += `\n*Rapport généré automatiquement par l'app Synthèse Tome v4 — Fléau*\n`;
-  md += `*"Sapientia in unum volumen"*\n`;
-
-  document.getElementById('report-output').textContent = md;
-  toast('🔮 Rapport généré');
+  return `
+    <div class="question ${isAnswered ? 'answered' : ''}">
+      <div class="q-number">Q${qNum}</div>
+      <div class="q-text">${escapeHtml(q.text)}</div>
+      ${q.claim ? `<div class="q-claim">${escapeHtml(q.claim)}</div>` : ''}
+      <div class="btn-group">
+        <button class="btn confirm ${ans.status==='confirmed'?'selected':''}" onclick="setStatus('${peopleKey}','${q.id}','confirmed')">✅ Confirmé</button>
+        <button class="btn obsolete ${ans.status==='obsolete'?'selected':''}" onclick="setStatus('${peopleKey}','${q.id}','obsolete')">❌ Obsolète</button>
+        <button class="btn update ${ans.status==='updated'?'selected':''}" onclick="setStatus('${peopleKey}','${q.id}','updated')">🔄 À jour</button>
+        <button class="btn unknown ${ans.status==='unknown'?'selected':''}" onclick="setStatus('${peopleKey}','${q.id}','unknown')">❓ Inconnu</button>
+      </div>
+      ${showSubText ? `
+        <label class="subq">${subLabel}</label>
+        <textarea
+          id="ta_${safeId}"
+          placeholder="Détails..."
+          oninput="setAnswer('${peopleKey}','${q.id}','text',this.value)"
+        >${escapeHtml(ans.text || '')}</textarea>
+      ` : ''}
+    </div>
+  `;
 }
 
-async function copyReport() {
-  const text = document.getElementById('report-output').textContent;
-  if (!text) { toast('Génère d\'abord le rapport', true); return; }
+function computeProgress(key) {
+  const p = PEOPLES[key];
+  if (!p) return 0;
+  let total = 0, done = 0;
+  p.sections.forEach(sec => sec.questions.forEach(q => {
+    total++;
+    const ans = (state[key] && state[key][q.id]) || {};
+    if (ans.status || (ans.text && ans.text.trim())) done++;
+  }));
+  return total === 0 ? 0 : Math.round(done * 100 / total);
+}
+
+function sectionProgress(key, sec) {
+  let total = 0, done = 0;
+  sec.questions.forEach(q => {
+    total++;
+    const ans = (state[key] && state[key][q.id]) || {};
+    if (ans.status || (ans.text && ans.text.trim())) done++;
+  });
+  return { total, done };
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+function selectPeople(key) {
+  currentPeople = key;
+  document.getElementById('app-home').classList.remove('active');
+  document.getElementById('action-bar').classList.add('show');
+  document.getElementById('home-btn').classList.add('show');
+  document.getElementById('header-title').textContent = `${PEOPLES[key].icon} ${PEOPLES[key].name}`;
+  document.getElementById('header-subtitle').textContent = PEOPLES[key].who;
+  renderApp(key);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (navigator.vibrate) navigator.vibrate(20);
+}
+
+function goHome() {
+  currentPeople = null;
+  document.getElementById('app-home').classList.add('active');
+  document.getElementById('apps-container').innerHTML = '';
+  document.getElementById('action-bar').classList.remove('show');
+  document.getElementById('home-btn').classList.remove('show');
+  document.getElementById('header-title').textContent = '📋 Challenge Fléau';
+  document.getElementById('header-subtitle').textContent = 'Validation Tome v3.0 → v4.0';
+  renderPicker();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setStatus(peopleKey, qid, status) {
+  if (!state[peopleKey]) state[peopleKey] = {};
+  if (!state[peopleKey][qid]) state[peopleKey][qid] = {};
+  if (state[peopleKey][qid].status === status) {
+    state[peopleKey][qid].status = null;
+  } else {
+    state[peopleKey][qid].status = status;
+  }
+  saveProgress(true);
+  renderApp(peopleKey);
+  if (navigator.vibrate) navigator.vibrate(15);
+}
+
+function setAnswer(peopleKey, qid, field, value) {
+  if (!state[peopleKey]) state[peopleKey] = {};
+  if (!state[peopleKey][qid]) state[peopleKey][qid] = {};
+  state[peopleKey][qid][field] = value;
+  saveProgress(true);
+  // Don't re-render (keeps focus)
+  // But update progress bar
+  const fill = document.querySelector('.progress-fill');
+  const txt = document.querySelector('.progress-text');
+  if (fill) fill.style.width = computeProgress(peopleKey) + '%';
+  if (txt) txt.textContent = computeProgress(peopleKey) + '% complété';
+}
+
+function saveProgress(silent) {
+  try {
+    localStorage.setItem('fleau_challenge_v2', JSON.stringify(state));
+    if (!silent) toast('💾 Sauvegardé');
+  } catch(e) {
+    toast('⚠️ Erreur de sauvegarde');
+  }
+}
+
+function exportJSON() {
+  if (!currentPeople) { toast('Sélectionne un peuple d\'abord'); return; }
+  const p = PEOPLES[currentPeople];
+  const data = {
+    fleau_challenge_version: '2.0',
+    peuple: p.name,
+    peuple_id: currentPeople,
+    scénariste: p.who,
+    date_export: new Date().toISOString(),
+    progression_pct: computeProgress(currentPeople),
+    réponses: {}
+  };
+  p.sections.forEach(sec => {
+    data.réponses[sec.title] = {};
+    sec.questions.forEach(q => {
+      const ans = (state[currentPeople] && state[currentPeople][q.id]) || {};
+      if (ans.status || (ans.text && ans.text.trim())) {
+        data.réponses[sec.title][q.id] = {
+          question: q.text,
+          tome_v3_dit: q.claim || null,
+          statut: ans.status || (ans.text ? 'libre' : null),
+          précision: ans.text || null
+        };
+      }
+    });
+  });
+  document.getElementById('json-out').textContent = JSON.stringify(data, null, 2);
+  document.getElementById('export-modal').classList.add('show');
+}
+
+async function copyJSON() {
+  const text = document.getElementById('json-out').textContent;
   try {
     await navigator.clipboard.writeText(text);
-    toast('📋 Rapport copié');
+    toast('📋 Copié !');
+    setTimeout(closeModal, 800);
   } catch(e) {
-    toast('❌ Erreur — sélectionnez manuellement', true);
+    // Fallback: select text
+    const el = document.getElementById('json-out');
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    toast('📋 Sélectionné — Cmd/Ctrl+C pour copier');
   }
 }
 
-function downloadReport(format) {
-  const text = document.getElementById('report-output').textContent;
-  if (!text) { toast('Génère d\'abord le rapport', true); return; }
-  let blob, ext;
-  if (format === 'json') {
-    blob = new Blob([JSON.stringify(received, null, 2)], { type: 'application/json' });
-    ext = 'json';
-  } else {
-    blob = new Blob([text], { type: 'text/markdown' });
-    ext = 'md';
-  }
+function downloadJSON() {
+  const text = document.getElementById('json-out').textContent;
+  const blob = new Blob([text], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `tome_v4_synthese_${new Date().toISOString().split('T')[0]}.${ext}`;
+  a.download = `fleau_${currentPeople}_${new Date().toISOString().split('T')[0]}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast('💾 Téléchargé');
+  toast('💾 Téléchargé !');
 }
 
-// FILE HANDLERS
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
-
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('dragover');
-});
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('dragover');
-  handleFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-
-function handleFiles(files) {
-  Array.from(files).forEach(f => {
-    const reader = new FileReader();
-    reader.onload = (ev) => addJSON(ev.target.result);
-    reader.readAsText(f);
-  });
-  fileInput.value = '';
+function closeModal() {
+  document.getElementById('export-modal').classList.remove('show');
 }
 
+function resetCurrent() {
+  if (!currentPeople) return;
+  if (!confirm(`Effacer toutes les réponses pour ${PEOPLES[currentPeople].name} ?`)) return;
+  delete state[currentPeople];
+  saveProgress();
+  renderApp(currentPeople);
+  toast('🔄 Réinitialisé');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ============================================================
 // INIT
-renderReceived();
-renderSummary();
+// ============================================================
+renderPicker();
+
+// Close modal on backdrop click
+document.getElementById('export-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'export-modal') closeModal();
+});
+
+// Prevent zoom on double-tap
+let lastTouch = 0;
+document.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTouch <= 300) {
+    e.preventDefault();
+  }
+  lastTouch = now;
+}, { passive: false });
 </script>
 </body>
 </html>
