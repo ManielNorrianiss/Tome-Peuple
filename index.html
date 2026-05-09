@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a0f2e">
+<title>🔮 Synthèse Tome v4 — Fléau</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #0d0820 0%, #1a0f2e 50%, #2d1b4e 100%);
+    background-attachment: fixed;
+    color: #f0e6d2;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid #c9a96e;
+    margin-bottom: 24px;
+  }
+  h1 { font-size: 1.8em; color: #ffd700; margin-bottom: 6px; }
+  .subtitle { color: #c9a96e; font-style: italic; font-size: 0.9em; }
+
+  /* SECTIONS */
+  .section {
+    background: rgba(0,0,0,0.32);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 18px;
+    border: 1px solid #3a2d5e;
+  }
+  .section-title {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #4a3b6e;
+    font-weight: 600;
+  }
+
+  /* DROP ZONE */
+  .drop-zone {
+    border: 2px dashed #c9a96e;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(201, 169, 110, 0.05);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    background: rgba(201, 169, 110, 0.15);
+    border-color: #ffd700;
+  }
+  .drop-zone .icon { font-size: 3em; margin-bottom: 10px; }
+  .drop-zone-text { color: #c9a96e; font-size: 1.05em; margin-bottom: 6px; }
+  .drop-zone-sub { color: #b8a374; font-size: 0.85em; }
+  #file-input { display: none; }
+
+  /* TEXTAREA INPUT */
+  .json-input {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    background: rgba(0,0,0,0.4);
+    border: 1.5px solid #4a3b6e;
+    border-radius: 8px;
+    color: #f0e6d2;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 0.85em;
+    resize: vertical;
+  }
+  .json-input:focus { outline: none; border-color: #c9a96e; }
+
+  /* RECEIVED LIST */
+  .received-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .received-card {
+    background: rgba(0,0,0,0.4);
+    border: 2px solid #3a2d5e;
+    border-radius: 10px;
+    padding: 12px;
+    position: relative;
+  }
+  .received-card.complete { border-color: #2d8e3e; }
+  .received-card .icon { font-size: 1.5em; margin-right: 8px; vertical-align: middle; }
+  .received-card .name { font-weight: bold; color: #ffd700; display: inline-block; }
+  .received-card .meta { font-size: 0.78em; color: #b8a374; margin-top: 4px; }
+  .received-card .stats { font-size: 0.85em; color: #f0e6d2; margin-top: 8px; }
+  .received-card .stats span { margin-right: 10px; }
+  .received-card .delete-btn {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(142, 45, 45, 0.6);
+    border: none;
+    color: white;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.85em;
+  }
+
+  /* SUMMARY */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .stat-box {
+    background: rgba(0,0,0,0.4);
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    border-left: 3px solid #c9a96e;
+  }
+  .stat-num { font-size: 1.8em; color: #ffd700; font-weight: bold; }
+  .stat-label { font-size: 0.78em; color: #b8a374; margin-top: 4px; }
+
+  /* REPORT */
+  .report {
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 0.82em;
+    max-height: 70vh;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.6;
+  }
+  .report h2 { color: #ffd700; font-size: 1.1em; margin: 14px 0 8px; }
+  .report h3 { color: #c9a96e; font-size: 0.95em; margin: 10px 0 6px; }
+  .report .confirm { color: #4dae5e; }
+  .report .obsolete { color: #ae4d4d; }
+  .report .update { color: #c9a96e; }
+  .report .unknown { color: #888; }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .btn {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9em;
+    flex: 1;
+    min-width: 140px;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn.primary { background: linear-gradient(135deg, #c9a96e, #ffd700); color: #1a0f2e; }
+  .btn.secondary { background: #4a3b6e; color: #f0e6d2; }
+  .btn.danger { background: #6e2d2d; color: white; }
+  .btn.success { background: #2d6e3e; color: white; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: linear-gradient(135deg, #2d8e3e, #4dae5e);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 50px;
+    z-index: 300;
+    opacity: 0;
+    transition: all 0.3s;
+    font-weight: 500;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: linear-gradient(135deg, #8e2d2d, #ae4d4d); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    color: #b8a374;
+    padding: 30px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🔮 Synthèse Tome v4.0</h1>
+    <div class="subtitle">Consolidation des challenges des scénaristes</div>
+  </header>
+
+  <!-- IMPORT -->
+  <div class="section">
+    <div class="section-title">📥 1. Importer les JSON reçus</div>
+
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="icon">📂</div>
+      <div class="drop-zone-text">Glisser des fichiers JSON ici</div>
+      <div class="drop-zone-sub">ou cliquer pour parcourir (multiple OK)</div>
+    </div>
+    <input type="file" id="file-input" accept=".json,application/json" multiple>
+
+    <div style="margin-top:14px;font-size:0.9em;color:#b8a374;">Ou coller le JSON directement :</div>
+    <textarea
+      id="json-paste"
+      class="json-input"
+      placeholder='Coller un JSON exporté depuis l\'app Challenge ici, puis cliquer "Ajouter"...'
+      style="margin-top:8px;"
+    ></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="addPastedJSON()">➕ Ajouter le JSON collé</button>
+      <button class="btn danger" onclick="clearAll()">🗑️ Tout effacer</button>
+    </div>
+  </div>
+
+  <!-- RECEIVED -->
+  <div class="section">
+    <div class="section-title">📋 2. Réponses reçues</div>
+    <div id="received-list">
+      <div class="empty">Aucune réponse importée pour l'instant.</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section" id="summary-section" style="display:none;">
+    <div class="section-title">📊 3. Vue d'ensemble</div>
+    <div class="summary" id="summary"></div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="section" id="report-section" style="display:none;">
+    <div class="section-title">📄 4. Rapport de consolidation pour le Tome v4.0</div>
+    <div class="btn-row" style="margin-bottom:14px;">
+      <button class="btn primary" onclick="generateReport()">🔮 Générer le rapport</button>
+      <button class="btn secondary" onclick="copyReport()">📋 Copier</button>
+      <button class="btn success" onclick="downloadReport('md')">💾 Télécharger .md</button>
+      <button class="btn success" onclick="downloadReport('json')">💾 Télécharger .json</button>
+    </div>
+    <div class="report" id="report-output"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+let received = {};
+try { received = JSON.parse(localStorage.getItem('fleau_synthesis_v1') || '{}'); } catch(e) { received = {}; }
+
+const PEOPLE_ICONS = {
+  'moriquendi': '🕷️', 'lossado': '🏯', 'pandor': '⚜️', 'oz': '🌈',
+  'sables': '🐪', 'numenor': '⚓', 'nazzakri': '👁️', 'elfes': '🌳', 'nains': '⚒️'
+};
+
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function save() {
+  localStorage.setItem('fleau_synthesis_v1', JSON.stringify(received));
+}
+
+function toast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function addJSON(json) {
+  let parsed;
+  try {
+    parsed = typeof json === 'string' ? JSON.parse(json) : json;
+  } catch(e) {
+    toast('❌ JSON invalide : ' + e.message, true);
+    return false;
+  }
+  if (!parsed.peuple_id || !parsed.réponses) {
+    toast('❌ Format invalide (manque peuple_id ou réponses)', true);
+    return false;
+  }
+  received[parsed.peuple_id] = parsed;
+  save();
+  renderReceived();
+  renderSummary();
+  toast(`✅ ${parsed.peuple} importé`);
+  return true;
+}
+
+function addPastedJSON() {
+  const text = document.getElementById('json-paste').value.trim();
+  if (!text) { toast('Coller un JSON d\'abord', true); return; }
+  if (addJSON(text)) {
+    document.getElementById('json-paste').value = '';
+  }
+}
+
+function deleteOne(key) {
+  if (!confirm(`Effacer les réponses de ${received[key].peuple} ?`)) return;
+  delete received[key];
+  save();
+  renderReceived();
+  renderSummary();
+  toast('🗑️ Effacé');
+}
+
+function clearAll() {
+  if (!confirm('Effacer TOUTES les réponses importées ?')) return;
+  received = {};
+  save();
+  renderReceived();
+  renderSummary();
+  document.getElementById('report-output').textContent = '';
+  toast('🗑️ Tout effacé');
+}
+
+function renderReceived() {
+  const list = document.getElementById('received-list');
+  const keys = Object.keys(received);
+  if (keys.length === 0) {
+    list.innerHTML = '<div class="empty">Aucune réponse importée pour l\'instant.</div>';
+    document.getElementById('summary-section').style.display = 'none';
+    document.getElementById('report-section').style.display = 'none';
+    return;
+  }
+  list.innerHTML = `<div class="received-grid">${keys.map(k => {
+    const r = received[k];
+    const stats = countStats(r);
+    return `
+      <div class="received-card ${stats.pct === 100 ? 'complete' : ''}">
+        <button class="delete-btn" onclick="deleteOne('${k}')" title="Effacer">×</button>
+        <span class="icon">${PEOPLE_ICONS[k] || '📋'}</span>
+        <span class="name">${escapeHtml(r.peuple)}</span>
+        <div class="meta">${escapeHtml(r.scénariste || '')}</div>
+        <div class="meta">📅 ${new Date(r.date_export).toLocaleDateString('fr-CA')}</div>
+        <div class="stats">
+          <span style="color:#4dae5e;">✅ ${stats.confirmed}</span>
+          <span style="color:#ae4d4d;">❌ ${stats.obsolete}</span>
+          <span style="color:#c9a96e;">🔄 ${stats.updated}</span>
+          <span style="color:#888;">❓ ${stats.unknown}</span>
+        </div>
+        <div class="stats" style="margin-top:4px;">📊 ${stats.pct}% complété (${stats.total} questions)</div>
+      </div>
+    `;
+  }).join('')}</div>`;
+  document.getElementById('summary-section').style.display = 'block';
+  document.getElementById('report-section').style.display = 'block';
+}
+
+function countStats(r) {
+  let confirmed = 0, obsolete = 0, updated = 0, unknown = 0, libre = 0, total = 0;
+  Object.values(r.réponses).forEach(section => {
+    Object.values(section).forEach(q => {
+      total++;
+      if (q.statut === 'confirmed') confirmed++;
+      else if (q.statut === 'obsolete') obsolete++;
+      else if (q.statut === 'updated') updated++;
+      else if (q.statut === 'unknown') unknown++;
+      else if (q.statut === 'libre') libre++;
+    });
+  });
+  return { confirmed, obsolete, updated, unknown, libre, total, pct: r.progression_pct || 0 };
+}
+
+function renderSummary() {
+  const keys = Object.keys(received);
+  if (keys.length === 0) return;
+  let totals = { confirmed: 0, obsolete: 0, updated: 0, unknown: 0, libre: 0, total: 0 };
+  keys.forEach(k => {
+    const s = countStats(received[k]);
+    totals.confirmed += s.confirmed;
+    totals.obsolete += s.obsolete;
+    totals.updated += s.updated;
+    totals.unknown += s.unknown;
+    totals.libre += s.libre;
+    totals.total += s.total;
+  });
+  document.getElementById('summary').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${keys.length}</div><div class="stat-label">Peuples reçus</div></div>
+    <div class="stat-box"><div class="stat-num">${totals.total}</div><div class="stat-label">Questions répondues</div></div>
+    <div class="stat-box" style="border-left-color:#4dae5e;"><div class="stat-num" style="color:#4dae5e;">${totals.confirmed}</div><div class="stat-label">✅ Confirmés</div></div>
+    <div class="stat-box" style="border-left-color:#ae4d4d;"><div class="stat-num" style="color:#ae4d4d;">${totals.obsolete}</div><div class="stat-label">❌ Obsolètes</div></div>
+    <div class="stat-box" style="border-left-color:#c9a96e;"><div class="stat-num" style="color:#c9a96e;">${totals.updated}</div><div class="stat-label">🔄 À jour</div></div>
+    <div class="stat-box" style="border-left-color:#888;"><div class="stat-num" style="color:#888;">${totals.unknown}</div><div class="stat-label">❓ Inconnus</div></div>
+    <div class="stat-box" style="border-left-color:#7a5fc7;"><div class="stat-num" style="color:#a07fe7;">${totals.libre}</div><div class="stat-label">📝 Libres</div></div>
+  `;
+}
+
+function generateReport() {
+  const keys = Object.keys(received);
+  if (keys.length === 0) { toast('Aucune réponse à traiter', true); return; }
+
+  let md = `# 📚 RAPPORT DE CONSOLIDATION — TOME FLÉAU v4.0\n\n`;
+  md += `**Date de génération :** ${new Date().toLocaleString('fr-CA')}\n`;
+  md += `**Peuples consultés :** ${keys.length}/9\n`;
+  md += `**Compilation pour Josué Boisjoli (Scribe du Codex)**\n\n`;
+  md += `---\n\n`;
+
+  // Section TL;DR
+  md += `## 🎯 TL;DR — Actions prioritaires pour le Tome v4.0\n\n`;
+  let totalObsolete = 0, totalUpdated = 0, totalLibre = 0;
+  keys.forEach(k => {
+    const s = countStats(received[k]);
+    totalObsolete += s.obsolete;
+    totalUpdated += s.updated;
+    totalLibre += s.libre;
+  });
+  md += `- **${totalObsolete}** affirmations à **supprimer/réviser** (marquées obsolètes)\n`;
+  md += `- **${totalUpdated}** affirmations à **mettre à jour** avec nouvelles infos\n`;
+  md += `- **${totalLibre}** **ajouts libres** à intégrer (nouveaux PNJs, lore, etc.)\n\n`;
+  md += `---\n\n`;
+
+  // Section critique : OBSOLÈTES
+  md += `## ❌ ZONE ROUGE — Affirmations OBSOLÈTES (à corriger en priorité)\n\n`;
+  let hasObs = false;
+  keys.forEach(k => {
+    const r = received[k];
+    let pHas = false;
+    Object.entries(r.réponses).forEach(([secTitle, section]) => {
+      Object.entries(section).forEach(([qid, q]) => {
+        if (q.statut === 'obsolete') {
+          if (!pHas) {
+            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
+            pHas = true;
+            hasObs = true;
+          }
+          md += `**${secTitle}**\n`;
+          md += `> ❓ ${q.question}\n`;
+          if (q.tome_v3_dit) md += `> 📜 *Tome v3 disait :* ${q.tome_v3_dit}\n`;
+          if (q.précision) md += `> ❌ **Pourquoi obsolète :** ${q.précision}\n`;
+          md += `\n`;
+        }
+      });
+    });
+  });
+  if (!hasObs) md += `*Aucune affirmation marquée obsolète. ✅*\n\n`;
+  md += `---\n\n`;
+
+  // Section : MISES À JOUR
+  md += `## 🔄 ZONE AMBRE — Mises à jour à intégrer\n\n`;
+  let hasUpd = false;
+  keys.forEach(k => {
+    const r = received[k];
+    let pHas = false;
+    Object.entries(r.réponses).forEach(([secTitle, section]) => {
+      Object.entries(section).forEach(([qid, q]) => {
+        if (q.statut === 'updated') {
+          if (!pHas) {
+            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
+            pHas = true;
+            hasUpd = true;
+          }
+          md += `**${secTitle}**\n`;
+          md += `> ❓ ${q.question}\n`;
+          if (q.tome_v3_dit) md += `> 📜 *Tome v3 disait :* ${q.tome_v3_dit}\n`;
+          if (q.précision) md += `> 🔄 **Version à jour :** ${q.précision}\n`;
+          md += `\n`;
+        }
+      });
+    });
+  });
+  if (!hasUpd) md += `*Aucune mise à jour. ✅*\n\n`;
+  md += `---\n\n`;
+
+  // Section : AJOUTS LIBRES
+  md += `## 📝 AJOUTS LIBRES — Nouveau contenu à intégrer\n\n`;
+  let hasFree = false;
+  keys.forEach(k => {
+    const r = received[k];
+    let pHas = false;
+    Object.entries(r.réponses).forEach(([secTitle, section]) => {
+      Object.entries(section).forEach(([qid, q]) => {
+        if (q.statut === 'libre' && q.précision) {
+          if (!pHas) {
+            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
+            pHas = true;
+            hasFree = true;
+          }
+          md += `**${secTitle} — ${q.question}**\n\n`;
+          md += `> ${q.précision.split('\n').join('\n> ')}\n\n`;
+        }
+      });
+    });
+  });
+  if (!hasFree) md += `*Aucun ajout libre. ✅*\n\n`;
+  md += `---\n\n`;
+
+  // Section : INCONNUS
+  md += `## ❓ ZONE GRISE — Affirmations marquées INCONNUES\n\n`;
+  md += `*Le scénariste n'est pas certain de la véracité. À investiguer.*\n\n`;
+  let hasUnk = false;
+  keys.forEach(k => {
+    const r = received[k];
+    let pHas = false;
+    Object.entries(r.réponses).forEach(([secTitle, section]) => {
+      Object.entries(section).forEach(([qid, q]) => {
+        if (q.statut === 'unknown') {
+          if (!pHas) {
+            md += `### ${PEOPLE_ICONS[k]} ${r.peuple} (${r.scénariste})\n\n`;
+            pHas = true;
+            hasUnk = true;
+          }
+          md += `- ${q.question}\n`;
+          if (q.tome_v3_dit) md += `  - *Tome v3 :* ${q.tome_v3_dit}\n`;
+        }
+      });
+    });
+    if (pHas) md += `\n`;
+  });
+  if (!hasUnk) md += `*Aucune zone grise. ✅*\n\n`;
+  md += `---\n\n`;
+
+  // Section : CONFIRMATIONS (résumé seulement)
+  md += `## ✅ ZONE VERTE — Affirmations CONFIRMÉES (résumé par peuple)\n\n`;
+  keys.forEach(k => {
+    const r = received[k];
+    const s = countStats(r);
+    md += `- **${PEOPLE_ICONS[k]} ${r.peuple}** : **${s.confirmed}** affirmations confirmées sur ${s.total} questions\n`;
+  });
+  md += `\n---\n\n`;
+
+  // Section : Peuples NON RÉPONDUS
+  const allPeoples = ['moriquendi', 'lossado', 'pandor', 'oz', 'sables', 'numenor', 'nazzakri', 'elfes', 'nains'];
+  const missing = allPeoples.filter(p => !received[p]);
+  if (missing.length > 0) {
+    md += `## ⚠️ Peuples non encore consultés\n\n`;
+    missing.forEach(m => {
+      md += `- ${PEOPLE_ICONS[m]} ${m.charAt(0).toUpperCase() + m.slice(1)}\n`;
+    });
+    md += `\n---\n\n`;
+  }
+
+  md += `## 📋 Détail complet par peuple\n\n`;
+  keys.forEach(k => {
+    const r = received[k];
+    md += `### ${PEOPLE_ICONS[k]} ${r.peuple}\n\n`;
+    md += `**Scénariste(s) :** ${r.scénariste}\n`;
+    md += `**Date :** ${new Date(r.date_export).toLocaleString('fr-CA')}\n`;
+    md += `**Progression :** ${r.progression_pct}%\n\n`;
+
+    Object.entries(r.réponses).forEach(([secTitle, section]) => {
+      const qList = Object.entries(section);
+      if (qList.length === 0) return;
+      md += `#### ${secTitle}\n\n`;
+      qList.forEach(([qid, q]) => {
+        const emoji = { confirmed: '✅', obsolete: '❌', updated: '🔄', unknown: '❓', libre: '📝' }[q.statut] || '•';
+        md += `${emoji} **${q.question}**\n`;
+        if (q.précision) md += `   ↳ ${q.précision.split('\n').join('\n   ')}\n`;
+        md += `\n`;
+      });
+    });
+    md += `---\n\n`;
+  });
+
+  md += `\n*Rapport généré automatiquement par l'app Synthèse Tome v4 — Fléau*\n`;
+  md += `*"Sapientia in unum volumen"*\n`;
+
+  document.getElementById('report-output').textContent = md;
+  toast('🔮 Rapport généré');
+}
+
+async function copyReport() {
+  const text = document.getElementById('report-output').textContent;
+  if (!text) { toast('Génère d\'abord le rapport', true); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('📋 Rapport copié');
+  } catch(e) {
+    toast('❌ Erreur — sélectionnez manuellement', true);
+  }
+}
+
+function downloadReport(format) {
+  const text = document.getElementById('report-output').textContent;
+  if (!text) { toast('Génère d\'abord le rapport', true); return; }
+  let blob, ext;
+  if (format === 'json') {
+    blob = new Blob([JSON.stringify(received, null, 2)], { type: 'application/json' });
+    ext = 'json';
+  } else {
+    blob = new Blob([text], { type: 'text/markdown' });
+    ext = 'md';
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tome_v4_synthese_${new Date().toISOString().split('T')[0]}.${ext}`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('💾 Téléchargé');
+}
+
+// FILE HANDLERS
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+function handleFiles(files) {
+  Array.from(files).forEach(f => {
+    const reader = new FileReader();
+    reader.onload = (ev) => addJSON(ev.target.result);
+    reader.readAsText(f);
+  });
+  fileInput.value = '';
+}
+
+// INIT
+renderReceived();
+renderSummary();
+</script>
+</body>
+</html>
