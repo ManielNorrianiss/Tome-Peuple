@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1a0f2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Challenge Scénaristes — Fléau v2</title>
+<title>Challenge Lore Ancien v4 — Fléau</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
   *:not(input):not(textarea) { user-select: none; }
@@ -25,7 +25,6 @@
   }
   .container { max-width: 760px; margin: 0 auto; padding-bottom: 100px; }
 
-  /* HEADER */
   header {
     text-align: center;
     padding: 16px 0 14px;
@@ -56,7 +55,6 @@
   }
   .home-btn.show { display: flex; }
 
-  /* PEOPLE PICKER */
   #picker {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -99,7 +97,6 @@
   .ppl-progress.partial { background: #6e552d; }
   .ppl-progress.full { background: #2d6e3e; }
 
-  /* APP */
   .app { display: none; }
   .app.active { display: block; animation: fadeIn 0.3s; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -112,28 +109,10 @@
   }
   .app-title { font-size: 1.2em; color: #ffd700; margin-bottom: 4px; }
   .app-meta { font-size: 0.82em; color: #b8a374; margin-bottom: 8px; }
-  .progress-bar {
-    height: 8px;
-    background: #2a1f47;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 10px;
-    position: relative;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #c9a96e, #ffd700);
-    transition: width 0.5s;
-    border-radius: 4px;
-  }
-  .progress-text {
-    text-align: right;
-    font-size: 0.75em;
-    color: #b8a374;
-    margin-top: 4px;
-  }
+  .progress-bar { height: 8px; background: #2a1f47; border-radius: 4px; overflow: hidden; margin-top: 10px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #c9a96e, #ffd700); transition: width 0.5s; border-radius: 4px; }
+  .progress-text { text-align: right; font-size: 0.75em; color: #b8a374; margin-top: 4px; }
 
-  /* SECTIONS */
   .section {
     background: rgba(0,0,0,0.32);
     border-radius: 12px;
@@ -162,7 +141,6 @@
     font-weight: normal;
   }
 
-  /* QUESTION */
   .question {
     background: rgba(255,255,255,0.04);
     padding: 12px 10px;
@@ -172,14 +150,33 @@
     transition: border-left-color 0.3s;
   }
   .question.answered { border-left-color: #2d8e3e; background: rgba(45, 142, 62, 0.06); }
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
   .q-number {
-    display: inline-block;
     font-size: 0.7em;
     color: #b8a374;
-    margin-bottom: 4px;
     font-weight: bold;
     letter-spacing: 0.5px;
   }
+  .q-year {
+    font-size: 0.68em;
+    color: #1a0f2e;
+    background: #c9a96e;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+  .q-year.y2021 { background: #6e7f9c; color: white; }
+  .q-year.y2022 { background: #8e7fc7; color: white; }
+  .q-year.y2023 { background: #c79c7f; color: white; }
+  .q-year.y2024 { background: #c9a96e; }
+  .q-year.y2025 { background: #d4af37; color: #1a0f2e; }
+  .q-year.lore { background: #7fa28e; color: white; }
   .q-text { margin-bottom: 10px; font-size: 0.95em; line-height: 1.45; }
   .q-claim {
     background: rgba(201, 169, 110, 0.1);
@@ -191,9 +188,8 @@
     border-left: 2px solid #c9a96e;
     line-height: 1.4;
   }
-  .q-claim::before { content: "📜 Tome v3 dit : "; font-weight: bold; }
+  .q-claim::before { content: "📜 Source : "; font-weight: bold; }
 
-  /* BUTTONS */
   .btn-group {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -228,7 +224,6 @@
   .btn.update.selected { background: #6e552d; color: white; border-color: #c9a96e; box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.3); }
   .btn.unknown.selected { background: #555; color: white; border-color: #888; box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.3); }
 
-  /* TEXT INPUT */
   textarea, input[type="text"] {
     width: 100%;
     padding: 12px;
@@ -237,22 +232,15 @@
     border-radius: 8px;
     color: #f0e6d2;
     font-family: inherit;
-    font-size: 16px; /* Prevents iOS zoom */
+    font-size: 16px;
     resize: vertical;
     -webkit-appearance: none;
     appearance: none;
   }
   textarea { min-height: 70px; }
   textarea:focus, input:focus { outline: none; border-color: #c9a96e; box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.2); }
-  label.subq {
-    display: block;
-    margin: 8px 0 4px;
-    font-size: 0.82em;
-    color: #c9a96e;
-    font-weight: 500;
-  }
+  label.subq { display: block; margin: 8px 0 4px; font-size: 0.82em; color: #c9a96e; font-weight: 500; }
 
-  /* ACTION BAR */
   .actions {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -284,7 +272,6 @@
   .action-btn.secondary { background: #4a3b6e; color: #f0e6d2; }
   .action-btn.danger { background: #6e2d2d; color: white; }
 
-  /* MODAL */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -331,10 +318,8 @@
     overflow-y: auto;
     white-space: pre-wrap;
     word-break: break-word;
-    -webkit-overflow-scrolling: touch;
   }
 
-  /* TOAST */
   .toast {
     position: fixed;
     bottom: 90px;
@@ -355,7 +340,6 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* HOME */
   .home-intro {
     background: rgba(0,0,0,0.32);
     padding: 16px;
@@ -391,8 +375,18 @@
   .pill-update { background: #c9a96e; }
   .pill-unknown { background: #888; }
 
-  /* SCROLL ANCHOR */
-  .scroll-anchor { scroll-margin-top: 80px; }
+  .year-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .year-pill {
+    font-size: 0.7em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
 </style>
 </head>
 <body>
@@ -400,51 +394,55 @@
 
   <header>
     <button class="home-btn" id="home-btn" onclick="goHome()" aria-label="Retour">←</button>
-    <h1 id="header-title">📋 Challenge Fléau</h1>
-    <div class="subtitle" id="header-subtitle">Validation Tome v3.0 → v4.0</div>
+    <h1 id="header-title">📜 Lore Ancien Fléau</h1>
+    <div class="subtitle" id="header-subtitle">Questions sur 2021–2025 et Lore intemporel</div>
   </header>
 
-  <!-- HOME -->
   <div id="app-home" class="app active">
     <div id="picker"></div>
 
     <div class="home-intro">
-      <p><strong>Bienvenue, scénaristes !</strong></p>
-      <p>Cette app permet de <strong>valider, corriger et enrichir</strong> le savoir de ton peuple. Tes réponses seront intégrées au <strong>Tome v4.0</strong>.</p>
-      <p>📱 Utilisable sur cellulaire · 💾 Sauvegarde auto · 📤 Export JSON pour Josué</p>
+      <p><strong>Bienvenue !</strong></p>
+      <p>Cette app pose des questions sur des éléments de lore <strong>antérieurs à 2026</strong> : scénarios 2021-2025, Bible Luminis, Valaquenta, Tomes du Savoir, etc.</p>
+      <p>📅 Chaque question indique <strong>son année source</strong> :</p>
+      <div class="year-legend">
+        <span class="year-pill" style="background:#6e7f9c;color:white;">📅 2021</span>
+        <span class="year-pill" style="background:#8e7fc7;color:white;">📅 2022</span>
+        <span class="year-pill" style="background:#c79c7f;color:white;">📅 2023</span>
+        <span class="year-pill" style="background:#c9a96e;color:#1a0f2e;">📅 2024</span>
+        <span class="year-pill" style="background:#d4af37;color:#1a0f2e;">📅 2025</span>
+        <span class="year-pill" style="background:#7fa28e;color:white;">📚 Lore</span>
+      </div>
+      <p style="margin-top:12px;">📱 Cellulaire-friendly · 💾 Sauvegarde auto · 📤 Export JSON pour Josué.</p>
     </div>
 
     <div class="section">
-      <div class="section-title">📊 Comment ça marche</div>
+      <div class="section-title">📊 Statuts de réponse</div>
       <div class="legend">
         <div class="legend-item"><span class="legend-pill pill-confirm"></span> ✅ Confirmé</div>
         <div class="legend-item"><span class="legend-pill pill-obsolete"></span> ❌ Obsolète</div>
         <div class="legend-item"><span class="legend-pill pill-update"></span> 🔄 À jour</div>
         <div class="legend-item"><span class="legend-pill pill-unknown"></span> ❓ Inconnu</div>
       </div>
-      <p style="margin-top:12px;font-size:0.85em;color:#b8a374;">Sélectionne ton peuple ci-dessus. Tape sur les questions, choisis un statut, ajoute des précisions au besoin. Quand t'es prêt, clique sur 📤 Exporter et envoie le JSON à Josué.</p>
     </div>
   </div>
 
-  <!-- APP CONTAINER -->
   <div id="apps-container"></div>
 
-  <!-- ACTION BAR -->
   <div class="actions" id="action-bar">
     <button class="action-btn secondary" onclick="saveProgress()">💾 Sauver</button>
     <button class="action-btn primary" onclick="exportJSON()">📤 Exporter</button>
     <button class="action-btn danger" onclick="resetCurrent()">🔄 Reset</button>
   </div>
 
-  <!-- MODAL EXPORT -->
   <div class="modal-overlay" id="export-modal">
     <div class="modal">
       <span class="modal-close" onclick="closeModal()">×</span>
       <h2>📤 Export pour Josué</h2>
-      <p style="margin-bottom:10px;color:#c9a96e;font-size:0.88em;">Copie ce texte et envoie-le à Josué (Messenger ou email) :</p>
+      <p style="margin-bottom:10px;color:#c9a96e;font-size:0.88em;">Copie et envoie à Josué :</p>
       <div class="json-out" id="json-out"></div>
       <button class="action-btn primary" onclick="copyJSON()" style="width:100%;margin-top:12px;">📋 Tout copier</button>
-      <button class="action-btn secondary" onclick="downloadJSON()" style="width:100%;margin-top:8px;">💾 Télécharger en fichier</button>
+      <button class="action-btn secondary" onclick="downloadJSON()" style="width:100%;margin-top:8px;">💾 Télécharger</button>
     </div>
   </div>
 
@@ -453,7 +451,7 @@
 
 <script>
 // ============================================================
-// DATA
+// QUESTIONS PERSONNALISÉES — LORE 2021-2025 (PAS DE 2026)
 // ============================================================
 const PEOPLES = {
 
@@ -462,44 +460,70 @@ const PEOPLES = {
     name: 'Moriquendi',
     who: 'Josué (Alevarto), Mathieux',
     sections: [
-      { title: '👥 Familles & Matronnes', questions: [
-        { id: 'matronnes_2026', text: 'Liste des 6 matronnes en 2026 — toujours exacte ?', claim: 'Yemana (Iznogood/grande), Moona (Norrianiss), Valérianna (Waral intérim), Mynoline (Drehjur), Alyda (Bois-de-l\'Est), Talia (Tolvir).' },
-        { id: 'tolvir_existence', text: 'Famille Tolvir = 6e famille mori officielle ?', claim: 'Drow refugiée chez les Waral, moitié transformée en mori. Talia Tolvir matronne.' },
-        { id: 'valerianna_status', text: 'Valérianna Waral encore "matriarche par intérim" ?', claim: 'Depuis la traîtrise de Valérianne (sa fille). Possède le cadeau Waral.' },
-        { id: 'aamos_duc', text: 'Aamos Waral confirmé duc du néant ?', claim: 'Ex arch-prêtre, sacrifié pour la déesse. A voilé les Silmarils donnés à Araushnée.' },
-        { id: 'vorn_charlina', text: 'Famille Vorn — drow d\'Araushnée, matronne Charlina ?', claim: 'Membres : Merinid, Ranas, X. Cath joue Charlina.' },
-        { id: 'estelle_yavanna', text: 'Estelle Norrianiss = réincarnation de Yavanna ?', claim: 'Fille de Moona et Maniel. Touchée par le divin.' },
+      { title: '🕸️ Lore intemporel — 6 Familles', questions: [
+        { id: 'fembranche', year: 'lore', text: 'Famille Fébranche (drow) convertie en Drehjur suite à la naissance d\'Araushnée ?', claim: 'Guide du parfait petit mori.' },
+        { id: 'yasraena', year: 'lore', text: 'Yasraena Drehjur = 1ère grande matronne, épouse de Drizzt ?', claim: 'Guide mori : "FEU Yasraena, 1ère grande matronne".' },
+        { id: 'wallace_willis_jumeaux', year: 'lore', text: 'Willis et Wallace Waral = jumeaux pas nés en même temps, chassés nus dans le monde des Diabolos pour déterminer qui était plus digne ?', claim: 'Guide mori.' },
+        { id: 'clintius_balrog', year: 'lore', text: 'Clintius Bois-de-l\'Est a tué le Balrog Valac à coup de fouet de laine ?', claim: 'Guide mori.' },
+        { id: 'charles_dragon_poelonne', year: 'lore', text: 'Charles Norrianiss a tué un dragon blanc à coup de poêlonne en petite tenue ?', claim: 'Guide mori.' },
+        { id: 'ozzoloh_caverne', year: 'lore', text: 'Norrianiss vivent dans la caverne du dragon blanc Ozzoloh Ventreen ?', claim: 'Guide mori.' },
       ]},
-      { title: '🕸️ Araushnée & Théologie', questions: [
-        { id: 'ducs_total', text: '9 ducs au total (4 Aranaé + 4 Loth + Aamos néant) ?', claim: 'Abigor, Vulkens, Shelob, Ichtios + 4 créés par Loth + Aamos.' },
-        { id: 'shelob_capture', text: 'Shelob capturée par les Illithids avec Daznogood ?', claim: 'Banquet 2026 : "Daznogood pris complètement, Shelob inclus".' },
-        { id: 'abigor_dead', text: 'Abigor (duc crabe) — mort fratricide par Selvetarm ?', claim: 'Histoire de Selvetarm : "le sang coula de sa tête... il ne bougeait plus".' },
-        { id: 'araushnee_fusion', text: 'Araushnée = fusion Loth + Aranaé séparées par Antharès ?', claim: 'Recréation de leur état originel des millénaires avant aujourd\'hui.' },
+      { title: '📜 Lore — 8 Édits & Tabous', questions: [
+        { id: 'huit_edits', year: 'lore', text: '8 Édits d\'Aranaée : Loyauté, Hiérarchie, Discipline, Respect, Neutralité, Adaptation, Ennoblissement, Finesse ?', claim: 'Guide mori.' },
+        { id: 'tabou_7', year: 'lore', text: 'Tabou du chiffre 7 = "8 moins 1" ? Le 8 est parfait ?', claim: 'Guide mori.' },
+        { id: 'huit_arts', year: 'lore', text: '8 arts mori : Cuisine, Musique, Chant, Danse, Marionnettiste, Blague, Théâtre + 8e mystérieux ?', claim: 'Guide mori.' },
+        { id: 'rajoute_poison_smoothie', year: 'lore', text: 'Un mori "rajoute du poison à son smoothie" ?', claim: 'Guide mori.' },
+        { id: 'compte_infini_2fois', year: 'lore', text: 'Un mori "a compté jusqu\'à l\'infini, deux fois" ?', claim: 'Guide mori.' },
+        { id: 'divise_zero', year: 'lore', text: 'Un mori "peut diviser par zéro" ?', claim: 'Guide mori.' },
+        { id: 'ne_dort_pas', year: 'lore', text: 'Un mori "ne dort pas, il attend" ?', claim: 'Guide mori.' },
       ]},
-      { title: '⚔️ Selvetarm & l\'Épée', questions: [
-        { id: 'selvetarm_quest', text: 'Joueurs Mori encore en quête de l\'épée de Selvetarm ?', claim: 'Mai 2026 : Drows bullies les bullies pour Selvetarm. Famille Vorn vient voir l\'épée.' },
-        { id: 'epee_loth', text: 'L\'épée = artefact de Loth/Eilistraee ?', claim: '"Je suis son outil. Je combats pour elle. Je saigne pour elle."' },
-        { id: 'menzoberra', text: 'Menzoberra (mère ténébreuse, générale Sans-Refuge) — toujours pertinente ?', claim: 'Cheffe du groupe avec qui Selvetarm tua le Balrog.' },
+      { title: '👹 Mai 2022 — Recensement & Duergar', questions: [
+        { id: 'recensement_2022', year: '2022', text: 'En Mai 2022, des inspecteurs mori (Ben et Math) sont venus faire un recensement, partant de Daznogood (capitale Iznogood) ?', claim: 'Mai 2022.' },
+        { id: 'desserteurs_question', year: '2022', text: 'Le recensement cherchait des déserteurs ou mori aux agissements étranges ?', claim: 'Mai 2022.' },
+        { id: 'arianaelle_quete_drehjur', year: '2022', text: 'Mai 2022 : début de la quête Arianaelle — sang de la lignée de Yasraena pour débloquer les archives Drehjur ?', claim: 'Mai 2022.' },
+        { id: 'duerger_dire_pig', year: '2022', text: 'En Mai 2022, un Duergar (Croteau) venait chercher 20 dire pig promis pendant l\'aventure d\'hiver ?', claim: 'Mai 2022.' },
+        { id: 'amos_ceremonie_couche', year: '2022', text: 'En Mai 2022, Amos faisait une cérémonie au coucher du soleil ?', claim: 'Mai 2022 (Croteau et Eli).' },
       ]},
-      { title: '🐙 Illithids & Hosten Valak', questions: [
-        { id: 'siege_status', text: 'Le Siège de Hosten Valak — quel est l\'état actuel ?', claim: 'Sous siège, Valérianna défend, Nautiloïdes en approche. 3 issues possibles.' },
-        { id: 'maniel_save', text: 'Maniel Norrianiss sauvé par Bécil le nain (fin Mai 2026) ?', claim: 'Contrôlé par Illithids, isolé, sorti du portail.' },
-        { id: 'karnash_fate', text: 'Karnash et Selerahc — où en sont-ils ?', claim: 'Entrés dans le portail malgré Ilsensine. Contrôlés. Karnash sauvé par Maxor.' },
-        { id: 'oslo_state', text: 'Oslo Ventreen sous siège Illithid ?', claim: 'Banquet 2026 : "Oslo Ventreen sous siège illithid".' },
+      { title: '🌑 Novembre 2023 — Brow Kazut & Néant', questions: [
+        { id: 'kazut_brow', year: '2023', text: 'Novembre 2023 : Kazut Brow = patron, est venu d\'une famille du néant qui n\'a aucune femme ?', claim: 'Novembre 2023.' },
+        { id: 'kazut_avari', year: '2023', text: 'Kazut Brow = Moriquendi (Avari), avait déjà été dans le plan de la création avant d\'être pris dans le néant ?', claim: 'Novembre 2023.' },
+        { id: 'creatures_neant_2023', year: '2023', text: 'Novembre 2023 : créatures du Néant qui sortaient sur les terres devaient être ramenées aux mori pour disparaître (peut être tué mais revient à la vie) ?', claim: 'Novembre 2023.' },
+        { id: 'menades_bestioles', year: '2023', text: 'Maxime Morbus venait étudier un ado mori qui avait mangé des bestioles de Ménades en Novembre 2023 ?', claim: 'Novembre 2023.' },
+        { id: 'santark_champion', year: '2023', text: 'Santark s\'approchait pour devenir champion d\'Aamos (lien créé entre lui et Aamos) en Novembre 2023 ?', claim: 'Novembre 2023.' },
+        { id: 'bois_est_tisserande', year: '2023', text: 'Chaque famille mori a un talent pour les maîtres de cérémonie — Bois-de-l\'Est = tisserande (peut changer le fil) ?', claim: 'Novembre 2023.' },
+        { id: 'estelle_irakaz_frere', year: '2023', text: 'Estelle est la sœur d\'Irakaz, et a demandé à son petit frère où était leur père Maniel en Novembre 2023 ?', claim: 'Novembre 2023.' },
       ]},
-      { title: '📿 Édits & Culture', questions: [
-        { id: 'huit_edits', text: '8 Édits d\'Aranaée toujours valides ?', claim: 'Loyauté, Hiérarchie, Discipline, Respect, Neutralité, Adaptation, Ennoblissement, Finesse.' },
-        { id: 'huit_arts', text: '8 arts mori (8e mystérieux) ?', claim: 'Cuisine, Musique, Chant, Danse, Marionnettiste, Blague, Théâtre, 8e art.' },
-        { id: 'tabou_7', text: 'Tabou du chiffre 7 = 8 moins 1 ?', claim: 'Toujours en parler comme 8-1. Le 8 est parfait.' },
+      { title: '🐙 Mai 2024 — Illithids & Trame Ichtyos', questions: [
+        { id: 'illithids_premiere_2024', year: '2024', text: 'Première sortie des Illithids en Mai 2024 (avec esclaves parasités) ?', claim: 'Mai 2024.' },
+        { id: 'beholder_izdontno', year: '2024', text: 'La matronne Izdontno (Yuki) a remercié les Mori d\'avoir aidé contre le beholder ?', claim: 'Mai 2024.' },
+        { id: 'aboleth_alerte', year: '2024', text: 'Un esclave Aboleth (Josh et Joz) est sorti pour alerter les Mori du danger Illithid ?', claim: 'Mai 2024.' },
+        { id: 'amarie_avenir_brillant', year: '2024', text: 'Amarië = nom de la jeune Ichtyos, "symbole d\'avenir brillant et plein de succès" ?', claim: 'Mai 2024.' },
+        { id: 'amarie_etranger_melkor', year: '2024', text: 'Amarië/Ichtyos a peur de "l\'Étranger" (Melkor qui kidnappe les créatures des Valars) ?', claim: 'Mai 2024.' },
+        { id: 'maniel_ex_vampire', year: '2024', text: 'Maniel N. était vampire avant Mai 2024, libéré par un câlin d\'un de ses enfants ?', claim: 'Mai 2024.' },
+        { id: 'razzia_matrone_choix', year: '2024', text: 'Mai 2024 : Razzia avait le choix entre matrone tisserande (Bois-de-l\'Est) ou prêtresse de Gaunadaur ?', claim: 'Mai 2024.' },
       ]},
-      { title: '👤 PNJs Mori', questions: [
-        { id: 'yemana_perso', text: 'Yemana Iznogood — personnalité "incompréhensible" exacte ?', claim: 'Calme, voix nasillarde aiguë, ne touche jamais (1-2 bras), ne refuse jamais du bois.' },
-        { id: 'ilyas_norrianiss', text: 'Ilyas Norrianiss — prophète actif (Joz) ?', claim: 'Annonce la venue de Vanadame en Mai 2026.' },
-        { id: 'vanadame', text: 'Vanadame Norrianiss — maître d\'armes en Mai 2026 ?', claim: 'Annoncée par le prophète. Discussion avec Karnash.' },
+      { title: '⚔️ Octobre 2024 — Feanor & Silmarils', questions: [
+        { id: 'feanor_silmarils_2024', year: '2024', text: 'Octobre 2024 : Feanor sortait pour récupérer les Silmarils ?', claim: 'Octobre 2024 (samedi mori).' },
+        { id: 'orcruxes_ulmo', year: '2024', text: 'Un arch-prêtre d\'Ulmo (Louy) aidait à préparer les "orcruxes" (reliques temporaires) pour occulter les seigneurs noirs à Sauron ?', claim: 'Octobre 2024.' },
+      ]},
+      { title: '👻 Mai 2025 — Quendi 1er âge & Trahisons', questions: [
+        { id: 'quendi_old_norse', year: '2025', text: 'Quendi du 1er âge sortis du portail en Mai 2025, parlant l\'old norse, maquillage rouge ?', claim: 'Mai 2025 — Heil, heima, nei, já, hjálp.' },
+        { id: '3_ados_seth_vendredi', year: '2025', text: 'Mai 2025 vendredi : 3 mori ados ont rejoint les rangs de Seth ?', claim: 'Mai 2025.' },
+        { id: '3_ados_seth_samedi', year: '2025', text: 'Mai 2025 samedi : 3 AUTRES mori ados ont rejoint Seth (donc 6 en tout) ?', claim: 'Mai 2025.' },
+        { id: 'ames_daznogood_morts', year: '2025', text: 'Âmes mori errantes parlant des morts à Daznogood vs Illithids et bataille contre Sauron ?', claim: 'Mai 2025.' },
+        { id: 'fissure_grande_toile', year: '2025', text: 'Âmes parlant de fissures dans la grande toile et de "la chute du gardien" ?', claim: 'Mai 2025.' },
+        { id: 'gualidurth_menzoberenzan', year: '2025', text: 'Âmes mentionnant les "gualidurth" et Menzoberenzan (mortes pendant les guerres contre les drows) ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '🕷️ Mai-Juin 2025 — Razzia & Vik', questions: [
+        { id: 'razzia_drider_shelob', year: '2025', text: 'Mai 2025 dimanche : Razzia s\'est transformée en drider et est devenue Shelob (énergie de Sauron) ?', claim: 'Mai 2025.' },
+        { id: 'razzia_bouche_sauron', year: '2025', text: 'Juin 2025 : une bouche de Sauron (numénorien noir) testait les limites émotionnelles de Razzia pour qu\'elle se transforme en drider ?', claim: 'Juin 2025.' },
+        { id: 'vik_jugement', year: '2025', text: 'Juin 2025 : âme de Vik dans le cimetière à se faire juger (quest Irakaz) ?', claim: 'Juin 2025.' },
+        { id: 'valeriane_jugement', year: '2025', text: 'Juin 2025 : jugement de Valériane partie 1 (l\'enfermer dans le réceptacle d\'Irakaz) — liée à Irozo ?', claim: 'Juin 2025.' },
+        { id: 'irozo_justice', year: '2025', text: 'Irozo (Eliott) venait apprendre sur la justice ?', claim: 'Juin 2025.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Mori manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore mori manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Mori importants (2021-2025) à ajouter ou corriger ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore mori plus anciens à ajouter ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -510,46 +534,59 @@ const PEOPLES = {
     name: 'Lossado',
     who: 'Alex (Daisuke), Gab',
     sections: [
-      { title: '🏛️ Hiérarchie de la Colonie', questions: [
-        { id: 'orihara_dirigeant', text: 'Frère d\'arme Orihara Izaya = dirigeant + responsable clérical ?', claim: 'Confirmé dans hiérarchie 2024.' },
-        { id: 'conseil_4', text: 'Conseil des Quatre toujours composé de Teppei / Orihara / vacant / Mirai ?', claim: 'Militaire : Sumo Isao Teppei · Clérical : Orihara · Politique : vacant · Arcanique : Meiko Chibana Mirai.' },
-        { id: 'tresorier', text: 'Meiko Chibana Mirai encore trésorier (cachette quotidienne du coffre) ?', claim: 'Cache et change de cachette quotidiennement.' },
-        { id: 'archiviste_vacant', text: 'Poste d\'Archiviste toujours vacant ?', claim: 'Prend en notes les événements en jeu et hors-jeu.' },
-        { id: 'rekugan', text: 'Sumo Isao Teppei encore Rekugan (recrues) ?', claim: 'Confirmé.' },
-        { id: 'gouvernante', text: 'Geisha Yu Hoshino encore Gouvernante (étiquette/propreté/punitions) ?', claim: 'Confirmé.' },
-        { id: 'maitre_ombres', text: 'Maître des Ombres = l\'Ordre de l\'Ombre (aucune info) ?', claim: 'Aucune information disponible.' },
+      { title: '🍵 Mai 2022 — Sukai & Mariage', questions: [
+        { id: 'mariage_sukai_nagi', year: '2022', text: 'Mai 2022 : Mariage de Sukai et Nagi (Coco, K7, Rachel) ?', claim: 'Mai 2022 samedi.' },
+        { id: 'marche_fondateur', year: '2022', text: 'Mai 2022 : marche commémorative lossadonienne du fondateur de Lossado ?', claim: 'Mai 2022.' },
+        { id: 'solde_lossado_2022', year: '2022', text: 'Mai 2022 : la solde lossadonienne était distribuée vendredi ?', claim: 'Mai 2022.' },
       ]},
-      { title: '💰 Économie & Grades', questions: [
-        { id: 'soldes', text: 'Soldes : Guerrier 15 / Prêtre 10 / Mage 5 florins ?', claim: 'Chef colonie +5. Daimio ou intérim famille importante +5.' },
-        { id: 'charte_grades', text: 'Charte 1 militaire = 2 prêtrise = 3 geisha = 4 mages ?', claim: 'Mentionnée dans Hiérarchie de la Colonie.' },
+      { title: '🐉 Septembre 2022 — Siths & Enterrement', questions: [
+        { id: '3_siths_revenir', year: '2022', text: 'Septembre 2022 : présentation des 3 Siths qui reviennent à Fléau par Sukai (Coco) ?', claim: 'Septembre 2022.' },
+        { id: 'enterrement_3e_enfant', year: '2022', text: 'Septembre 2022 : enterrement du 3e enfant décédé de Sukai et Nagi (Coco) ?', claim: 'Septembre 2022.' },
+        { id: 'feyris_avatar', year: '2023', text: 'Novembre 2023 : Shensao sortait avec Sukai pour le départ de l\'avatar de Feyris ?', claim: 'Novembre 2023.' },
       ]},
-      { title: '🍵 Les 9 Maisons (Okias)', questions: [
-        { id: 'okias_actuelles', text: 'Les 9 Okias toujours actuelles ?', claim: 'Lotus (Aijin/Ishido), Koï (Eboushi), Bamboo (Tanaka), Rivière (Hatake), Cerisier (Isawa), Bonsaï (Doji), Origami (Otto), Chrysanthème (Iwasaki), Chibana (Nakamura/Royolo).' },
-        { id: 'isawa_defi', text: 'Famille Isawa visite + défi en Mai 2026 ?', claim: 'Mai 2026 : Visite Famille Isawa, infos + défi.' },
+      { title: '🍵 Mai 2023 — 11 Ambassadeurs', questions: [
+        { id: 'sukai_imperiale', year: '2023', text: 'Litsu Sukai (Coco) = Ambassadrice impériale, Maîtresse instructeur de Ishido Dono ?', claim: 'Mai 2023.' },
+        { id: 'lopan_pardon', year: '2023', text: 'Litsu Lopan Shensao (Loïc) = cousin de Sukai, l\'impératrice a pardonné à lui et sa mère ?', claim: 'Mai 2023.' },
+        { id: 'matso_taisha', year: '2023', text: 'Matso Taisha Dono (Danielle) = Maîtresse des temples ?', claim: 'Mai 2023.' },
+        { id: 'shan_stuna_calamity', year: '2023', text: 'Shan Stuna Dono (Karine) = ambassadrice de la Mégapole de Calamity ?', claim: 'Mai 2023.' },
+        { id: 'eboushi_mayumi', year: '2023', text: 'Eboushi Mayumi Dono = ambassadrice Eboushi ?', claim: 'Mai 2023.' },
+        { id: 'tanaka_akihiko', year: '2023', text: 'Tanaka Akihiko Dono (Gab) = ambassadeur Tanaka ?', claim: 'Mai 2023.' },
+        { id: 'ottomo_tetsuya', year: '2023', text: 'Ottomo Tetsuya Dono (Yuki) = ambassadeur Ottomo ?', claim: 'Mai 2023.' },
+        { id: 'hatake_kame', year: '2023', text: 'Hatake Kamé Dono (Josué) = ambassadeur Hatake ?', claim: 'Mai 2023.' },
+        { id: 'isawa_shou', year: '2023', text: 'Isawa Shou Dono (Alex) = ambassadeur Isawa ?', claim: 'Mai 2023.' },
+        { id: 'doji_takeo', year: '2023', text: 'Doji Takeo Dono (Martin) = ambassadeur Doji ?', claim: 'Mai 2023.' },
+        { id: 'iwasaki_fukuzo', year: '2023', text: 'Iwasaki Fukuzo Dono = ambassadeur Iwasaki ?', claim: 'Mai 2023.' },
+        { id: 'yamaha_stuling', year: '2023', text: 'Stuling Shen = ambassadeur remplaçant du Mont Yamaha ?', claim: 'Mai 2023.' },
       ]},
-      { title: '⚡ Mandos & Diabolos', questions: [
-        { id: 'daisuke_100lunes', text: 'Frère Marshall Nakamura Daïsuke a-t-il bien témoigné des Diabolos à sa 100e lune ?', claim: 'Mandos voulut chercher son âme. Diabolos prirent Mandos en otage.' },
-        { id: 'mandos_destroyed', text: 'Cristal de Mandos détruit en Infernis (2e grande guerre) ?', claim: 'Par les aventuriers de Royolo.' },
+      { title: '🐺 2024 — Tsukiko & Loup-garou', questions: [
+        { id: 'tsukiko_controlee', year: '2024', text: 'Mai 2024 : Tsukiko de plus en plus contrôlée par son loup-garou ?', claim: 'Mai 2024.' },
+        { id: 'shen_sao_djihad', year: '2024', text: 'Shen Sao a parlé de la Djihad (Guerre sainte) — début quest loup-garou Lossado vs Nazzakri ?', claim: 'Mai 2024.' },
+        { id: 'moine_montagne', year: '2024', text: 'Un moine du Mont des Moines accompagnait Tsukiko en Mai 2024 ?', claim: 'Mai 2024.' },
+        { id: 'mizuki_dragonniere', year: '2024', text: 'Mizuki + Himaru (servante de Souksukai) = quest dragonnière pour Mirai ?', claim: 'Mai 2024.' },
+        { id: 'isawa_lingshen', year: '2024', text: 'Présentation du Samurai Isawa Lingshen + ambassadrice Eboushi (Otomo + Illithides) ?', claim: 'Mai 2024.' },
+        { id: 'inquisiteur_grand_cerf', year: '2024', text: 'Un Inquisiteur (Pascal) est venu brûler la tête du Grand Cerf en Mai 2024 ?', claim: 'Mai 2024.' },
       ]},
-      { title: '🐙 Illithids fabriqués', questions: [
-        { id: 'illithids_made', text: 'Les Illithids ont été fabriqués à Lossado, en morceaux ?', claim: '"Pas complets". 1er sorti en octobre 2025 lors d\'une fin de game.' },
-        { id: 'elder_brain_recup', text: 'Lossado veut récupérer son Elder Brain et ses Illithids ?', claim: 'Banquet 2026 : objectif Lossado.' },
-        { id: 'iwazaki_brain', text: 'Iwazaki a-t-il volé le cerveau du daimio Ottomo ?', claim: 'Banquet 2026.' },
-        { id: 'jiangshi_kill', text: 'Jiangshi a tué Ino Suke (samedi Mai 2026) ?', claim: 'Bu son sang avec aide des Gobelins. Réussi.' },
+      { title: '⚰️ 2024 — Blood Zombie', questions: [
+        { id: 'blood_zombie', year: '2024', text: 'Mai 2024 : attaque de Blood Zombie = suite de la Game sur Table ?', claim: 'Mai 2024.' },
       ]},
-      { title: '👥 PNJs Lossado', questions: [
-        { id: 'yi_sima', text: 'Yi Sima (Sima Yi) — visites de suivi (colonie/Elder brain/élémental d\'eau/armement/familles) ?', claim: 'Mai 2026 : peut prendre 1-2 gros bras.' },
-        { id: 'utilisateur_force', text: 'Utilisateur de la force = entité mystérieuse observant Lossado ?', claim: 'Ne parle pas, observe et apprend.' },
-        { id: 'do_kwo', text: 'Do Kwo — fiche dédiée, rôle clair ?', claim: 'Fiche existante.' },
-        { id: 'ambassadeur_isawa', text: 'Ambassadeur Isawa — rôle 2026 ?', claim: 'Fiche existante.' },
+      { title: '🎴 Octobre 2024 — Tengu & Calamity', questions: [
+        { id: 'banniere_calamity', year: '2024', text: 'Octobre 2024 : Lossado officiellement sous la bannière de Calamity ?', claim: 'Octobre 2024.' },
+        { id: 'renaissance_tengu', year: '2024', text: 'Octobre 2024 : introduction de la renaissance des Tengu (Game sur table) ?', claim: 'Octobre 2024.' },
+        { id: 'mizuki_ecailles_jade', year: '2024', text: 'Octobre 2024 : Mizuki rituel pour ses écailles de Jade (Bibitte) ?', claim: 'Octobre 2024.' },
+        { id: 'fils_matar', year: '2024', text: 'Octobre 2024 : introduction du fils de Matar à la Colonie + visite June pour cas Aurore + épée du père de Teppei ?', claim: 'Octobre 2024 (Nyny).' },
       ]},
-      { title: '🌙 Obscur & Hélians', questions: [
-        { id: 'imperatrice_avatar', text: 'Impératrice de Lossado = avatar de l\'Obscur avec 40M priants ?', claim: 'Document Remontée d\'Eru.' },
-        { id: 'vanhastor_noctunisme', text: 'Vanhastor = Hélian de l\'intelligence, inventeur du Noctunisme ?', claim: 'À Lossado. Lien particulier.' },
+      { title: '🌅 2025 — Kami & Vagabond', questions: [
+        { id: 'shan_stuna_kami', year: '2025', text: 'Mai 2025 : Shan Stuna avait une mission de Maître des Temples Matsuo Taisha pour les Kami ?', claim: 'Mai 2025 + Juin 2025.' },
+        { id: 'mariage_oct2025', year: '2025', text: 'Octobre 2025 : Mariage de Mizuki et Teppei à la colonie impériale (samedi) ?', claim: 'Octobre 2025.' },
+        { id: 'sims_yi_visite', year: '2025', text: 'Sima Yi visite suivi (colonie/Elder brain/élémental d\'eau/armement) ?', claim: 'Lore récent.' },
+      ]},
+      { title: '⚰️ 2023 — Quests classiques', questions: [
+        { id: 'samurai_lingshen_2023', year: '2023', text: 'Septembre 2022 : perso lossadonien joué par Thorn introduit ?', claim: 'Septembre 2022.' },
+        { id: 'guinol_guillotine', year: '2022', text: 'Septembre 2022 : continuation de la quest de Guinol avec Guillotine (Coco) ?', claim: 'Septembre 2022.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Lossado manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore Lossado manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Lossado importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore lossado anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -560,46 +597,52 @@ const PEOPLES = {
     name: 'Pandor',
     who: 'Yuki, Pascal, Hugo',
     sections: [
-      { title: '👑 Royauté & Intendance', questions: [
-        { id: 'walsingham_intendant', text: 'Walsingham 1er = intendant actuel ?', claim: '43e dans la lignée. En attendant les enfants d\'Amandril.' },
-        { id: 'amandril_libere', text: 'Amandril libéré du joug du mal et brûlé en Royolo ?', claim: 'Repose avec ses ancêtres dans la lumière, ne peut plus être corrompu.' },
-        { id: 'heritiers', text: 'Annabelle / Navara / Athéo = bons héritiers d\'Amandril ?', claim: 'Annabelle (héritière aînée), Navara (non aînée), Athéo (frère cadet, chef Ordre Pandor).' },
-        { id: 'enduril', text: 'Enduril = épée actuelle du roi de Pandor (forgée des fragments de Narsil) ?', claim: 'Les autres grands artefacts de Numénor sont perdus dans le temps.' },
+      { title: '📜 Lore — Bible Luminis', questions: [
+        { id: 'preceptes_luminis', year: 'lore', text: 'Préceptes Luminis : "Sous la Lumière, tu combattras, et l\'union des Puissances tu proclameras" ?', claim: 'Bible Luminis.' },
+        { id: 'aasimars_dores', year: 'lore', text: 'Aasimars : sang doré, peau dorée, héritiers de l\'essence des elfes solaires fidèles ?', claim: 'Bible Luminis.' },
+        { id: 'elfes_solaires_decimes', year: 'lore', text: 'Elfes Solaires décimés au 4e âge par armée d\'ogre mage en protégeant la reine d\'Amandril ?', claim: 'Bible Luminis.' },
+        { id: 'claudius_radu', year: 'lore', text: 'Saint-Claudius (Therbossus) tué par Radu Ruansanchez (jaloux), devint premier Vampire de Luminis ?', claim: 'Bible Luminis.' },
       ]},
-      { title: '🛡️ Sainte Quadriade', questions: [
-        { id: 'quadriade', text: 'Sainte-Quadriade : Eirenée + Thémis + Claudius + Arianne ?', claim: 'Anciennement Triade, Arianne s\'est rajoutée.' },
-        { id: 'eirenee_licorne', text: 'Sainte-Eirenée = Paix + Altruisme, symbole Licorne ?', claim: 'Confirmé Bible Luminis.' },
-        { id: 'themis_balance', text: 'Sainte-Thémis = Justice + Intégrité, symbole Balance ?', claim: 'Confirmé Bible Luminis.' },
-        { id: 'claudius_coupe', text: 'Saint-Claudius = Rédemption + Persévérance, symbole Coupe ?', claim: 'Premier vampire de Luminis (tué par Radu Ruansanchez), patron de l\'inquisition.' },
-        { id: 'arianne_lion', text: 'Sainte-Arianne = Bravoure + Combat, symbole Lion ?', claim: 'Possiblement mère de Krom OU jadis à droite d\'Antharès (légendes contradictoires).' },
+      { title: '🏛️ Lore — Sainte Quadriade', questions: [
+        { id: 'eirenee_licorne', year: 'lore', text: 'Sainte-Eirenée = Paix + Altruisme, symbole Licorne ?', claim: 'Bible Luminis.' },
+        { id: 'themis_balance', year: 'lore', text: 'Sainte-Thémis = Justice + Intégrité, symbole Balance ?', claim: 'Bible Luminis.' },
+        { id: 'arianne_lion_krom', year: 'lore', text: 'Sainte-Arianne = Lion. Mère de Krom OU jadis à droite d\'Antharès (légendes contradictoires) ?', claim: 'Bible Luminis.' },
+        { id: 'six_valeurs', year: 'lore', text: '6 valeurs cardinales : Sagesse, Charisme, Diplomatie, Foi, Justice, Honneur ?', claim: 'Bible Luminis.' },
       ]},
-      { title: '⚖️ Lois & Ordres', questions: [
-        { id: 'six_valeurs', text: '6 valeurs cardinales : Sagesse, Charisme, Diplomatie, Foi, Justice, Honneur ?', claim: 'Bible Luminis.' },
-        { id: 'lois_pandor', text: 'Lois Pandoriennes — citoyenneté, interdictions, sanctions à jour ?', claim: 'Tribunal du clergé + inquisiteur. Confession 29 jours.' },
-        { id: 'selynor_code', text: 'Code des Chevaliers de Sélynor (8 préceptes) ?', claim: 'Atribon le Juste + Belgarian le Valeureux fondateurs.' },
-        { id: 'freres_ordre', text: 'Frères de l\'Ordre actifs (prêtres ressuscités, plan des ombres) ?', claim: '2e ordre exception qui peut toucher au mal.' },
+      { title: '⚖️ Lore — Lois & Ordres', questions: [
+        { id: 'selynor_atribon', year: 'lore', text: 'Chevaliers de Sélynor fondés par Atribon le Juste et Belgarian le Valeureux ?', claim: 'Doc Sélynor.' },
+        { id: 'selynor_perd_privilege', year: 'lore', text: 'Un Sélynor perd son privilège s\'il perd contre son démon intérieur ?', claim: 'Doc Sélynor.' },
+        { id: 'gorgorbey', year: 'lore', text: 'Mercenaires GorGorBey attaquaient les villages pandoriens (lore Sélynor) ?', claim: 'Doc Sélynor.' },
+        { id: 'claudius_femme_lossado', year: 'lore', text: 'Claudius eut une femme lossadonienne ?', claim: 'Doc Sélynor.' },
+        { id: 'confession_29j', year: 'lore', text: 'Confession possible 29 jours après l\'acte pour alléger la peine ?', claim: 'Lois Pandoriennes.' },
+        { id: 'freres_ordre_morts', year: 'lore', text: 'Frères de l\'Ordre = prêtres vétérans ramenés d\'entre les morts, voyagent dans le plan des ombres ?', claim: 'Lois Pandoriennes.' },
       ]},
-      { title: '🏛️ Politique 2026', questions: [
-        { id: 'dracius_consul', text: 'Dracius (Justin Landry) = Consul actuel ?', claim: 'Fantassin, 52 lunes, marié Boutika.' },
-        { id: 'dracius_dragons', text: 'Dracius veut créer la Guilde des Dragons Noirs ?', claim: '9e légion, spécialistes.' },
-        { id: 'dracius_evil', text: 'Dracius envisage de virer chaotique evil avec marque de Sauron ?', claim: 'Désir personnel mentionné.' },
-        { id: 'commode_role', text: 'Commode = Sénateur ou Consul ?', claim: 'Fiche dit "consul", autre source dit Sénateur. Charismatique, loyal ; glouton, pègre, froussard.' },
-        { id: 'cardinal_karianne', text: 'Cardinal Karianne — toujours en poste ?', claim: 'Clergé.' },
+      { title: '🌫️ Mai 2022 — Refonte des lois', questions: [
+        { id: 'refonte_livre_lois_2022', year: '2022', text: 'Mai 2022 : des Pandoriens et Mystère venaient pour refaire le livre des lois et voir où le peuple s\'enligne (Coco) ?', claim: 'Mai 2022.' },
+        { id: 'elerinna_reya_2022', year: '2022', text: 'Mai 2022 : Elerinna venait voir Selena avec Reya (Bibite et Marie-Clara) ?', claim: 'Mai 2022.' },
       ]},
-      { title: '🌟 Élus & Aasimars', questions: [
-        { id: 'aasimars_9', text: '9 Aasimars touchés par Luminis ?', claim: 'Bible Luminis. Sang doré, peau dorée.' },
-        { id: 'elfes_solaires', text: 'Elfes Solaires décimés au 4e âge par armée d\'ogre mage ?', claim: 'En protégeant la reine d\'Amandril.' },
+      { title: '🌫️ Mai 2023 — Le Merzost', questions: [
+        { id: 'merzost', year: '2023', text: 'Le Merzost (boucane apparaît dans bâtiments + créatures dans la boucane) = thème de Mai 2023 ?', claim: 'Scénario Mai 2023.' },
+        { id: 'maitre_savoir_themis', year: '2023', text: 'Maître du savoir (Martin) a donné un cours 101 sur Pandor + épée de Thémis ?', claim: 'Mai 2023.' },
+        { id: 'pretorienne_mystere', year: '2023', text: 'Prétorienne Mystère (Coco) est venue voir Pandor pour "enligner Lyon" ?', claim: 'Mai 2023.' },
+        { id: 'leorak', year: '2023', text: 'Leorak (Martin et Josué) est venu mettre de l\'ordre dans les apprentissages ?', claim: 'Mai 2023.' },
+        { id: 'thorn_diplomatie_pandor', year: '2023', text: 'Thorn (Loïc) est allé voir Pandor pour de la Diplomatie ?', claim: 'Mai 2023.' },
+        { id: 'samuel_persistant_2024', year: '2024', text: 'Samuel le persistant (Josué) venait voir Pandor pour le banquet des vampires (Moriquendi) ?', claim: 'Mai 2024.' },
       ]},
-      { title: '🎯 Trame Mai 2026', questions: [
-        { id: 'lyon_quete', text: 'Lyon DelaCroix (niveau 80) — quêtes en cours ?', claim: 'Crâne 100 âmes à Jean de Carouge, Silmarils à Minas, généalogie. Sens du devoir choix déchirants.' },
-        { id: 'aldène_chevalier', text: 'Aldène devenu chevalier en Mai 2026 ?', claim: 'Mai 2026, défense Minas Tirith.' },
-        { id: 'boutika_renouveau', text: 'Boutika a renouvelé son sacrement (Walsingham) ?', claim: 'Mai 2026.' },
-        { id: 'sainte_triade_quete', text: 'Quête Sainte Triade (Boucle/Balance/Épée + Larmes) — Kassia et Alden ?', claim: 'Larmes chaotiques + Larmes pures à trouver/créer.' },
-        { id: 'envoye_couronne', text: 'Envoyé de la Couronne pour recensement (Alfred) ?', claim: 'Identifier membres présents/quittés et raisons (procès).' },
+      { title: '⚖️ Novembre 2023 — Procès Lyon & Kelly', questions: [
+        { id: 'proces_lyon_kelly', year: '2023', text: 'Novembre 2023 : Procès de Lyon et Kelly (Coco, Hugo, Yuki, Ben, Pascal, Alex) à 14h ?', claim: 'Novembre 2023.' },
+      ]},
+      { title: '⚔️ Octobre 2024 — Chasse aux Seigneurs Noirs', questions: [
+        { id: 'chasse_seigneurs_noirs', year: '2024', text: 'Octobre 2024 : Navarra (Danielle), Florant de la Moustache (Yuki), Elerina (Bibite) + son démon bleu (Loïc) venaient aider Pandor à chasser les Seigneurs Noirs (faibles, ressentir la lumière) ?', claim: 'Octobre 2024.' },
+        { id: 'samuel_coquins_2024', year: '2024', text: 'Octobre 2024 : Samuel le persistant venait aider les pandoriens contre les coquins (mentorat + réponses) ?', claim: 'Octobre 2024.' },
+      ]},
+      { title: '🏰 Octobre 2025 — Minas Tirith', questions: [
+        { id: 'amelia_minas_2025', year: '2025', text: 'Octobre 2025 : Amélia (Coco) réveillée pour aider à Minas Tirith ?', claim: 'Octobre 2025.' },
+        { id: 'portail_minas_2025', year: '2025', text: 'Octobre 2025 : portail s\'est ouvert pour Minas Tirith (vendredi crypte) ?', claim: 'Octobre 2025.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Pandor manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore Pandor manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Pandor importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore Pandor anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -610,33 +653,37 @@ const PEOPLES = {
     name: 'Oz',
     who: 'Yuki',
     sections: [
-      { title: '🏰 Identité Oz', questions: [
-        { id: 'oz_status_2026', text: 'Oz est-il "clean rien de spécial" en 2026 ?', claim: 'Banquet 2026 : "Clean, rien de spéciale (sauf Yuki, FABULOUS)".' },
-        { id: 'oz_pantheon', text: 'Le panthéon d\'Oz — quels dieux principaux ?', claim: 'Document "Quêtes panthéon Oz" (2.3 Mo) à clarifier.' },
-        { id: 'oz_palace', text: 'Structure : Palace, City, People, Temple ?', claim: 'Mentions LORE MASTER seulement.' },
+      { title: '🏰 Septembre 2022 — Maxime Morbus', questions: [
+        { id: 'maxime_morbus_frere', year: '2022', text: 'Septembre 2022 : Maxime Morbus = frère d\'Esterre, venait voir Cric et (Eric) (Thorn) ?', claim: 'Septembre 2022.' },
+        { id: 'capucine_2022', year: '2022', text: 'Septembre 2022 : Capucine sort si du temps disponible ?', claim: 'Septembre 2022.' },
       ]},
-      { title: '🐉 Ozzoloh Ventreen', questions: [
-        { id: 'ozzoloh_lien', text: 'Ozzoloh Ventreen (dragon blanc) lié à Oz ou seulement aux Mori Norrianiss ?', claim: 'Norrianiss vivent dans la caverne du dragon blanc Ozzoloh. Lien avec Oz à clarifier.' },
-        { id: 'oz_dragons', text: 'Y a-t-il un lien officiel entre Oz et les dragons ?', claim: 'À déterminer.' },
+      { title: '👩 Mai 2022 — Esterre & Kendrick', questions: [
+        { id: 'esterre_alchimiste', year: '2022', text: 'Mai 2022 : Esterre = Alchimiste de Oz, venait voir Kendrick ?', claim: 'Mai 2022.' },
       ]},
-      { title: '🧪 Laboratoires Morbus', questions: [
-        { id: 'morbus_actif', text: 'Laboratoires Morbus actifs et collectent infos sur Illithids ?', claim: 'Banquet 2026 : "Collecte d\'information pour les laboratoires Morbus".' },
-        { id: 'lucius_alexis', text: 'Lucius Danezakyr (Yuki) + Chef médecin Morbus Alexis (Bibitte) ?', claim: 'Présents au Banquet 2026.' },
-        { id: 'morbus_recherche', text: 'Quel est le but réel des Laboratoires Morbus ?', claim: 'Recherche/expérimentation à clarifier.' },
+      { title: '🏰 Mai 2023 — Esterre/Kendrick', questions: [
+        { id: 'esterre_kendrick_2023', year: '2023', text: 'Mai 2023 : Esterre (Coco) sortait pour aller voir Kendrick (conseil ou aide) ?', claim: 'Mai 2023.' },
       ]},
-      { title: '🤝 Relations', questions: [
-        { id: 'oz_lossado_froid', text: 'Oz en froid avec Lossado — toujours vrai ?', claim: 'Banquet 2026.' },
-        { id: 'oz_pandor_auberge', text: 'Oz traité avec Pandor pour l\'auberge ?', claim: 'Mai 2026 : "Le Roi et Commode viennent faire leur jugement [...]. Traité avec Oz pour l\'auberge."' },
+      { title: '⚔️ Mai 2024 — Voleur d\'artefacts', questions: [
+        { id: 'echoppe_2024', year: '2024', text: 'Mai 2024 : Yuki tenait l\'échoppe avec accueil des gens ?', claim: 'Mai 2024.' },
+        { id: 'voleur_artefacts', year: '2024', text: 'Mai 2024 : "Le voleur des artefacts puissants" se présentait à Oz à la recherche de nouveaux objets ?', claim: 'Mai 2024.' },
       ]},
-      { title: '👤 PNJs Oz', questions: [
-        { id: 'selena_q1', text: 'Selena toujours active comme PNJ ?', claim: 'Mentionnée dans LORE MASTER comme PNJ Q1.' },
-        { id: 'yuki_fabulous', text: 'Yuki en personnage = FABULOUS ?', claim: 'Banquet 2026 + scénario Mai.' },
-        { id: 'oz_echoppe', text: 'Yuki à l\'échoppe et/ou sur le terrain Mai 2026 ?', claim: 'Confirmé.' },
+      { title: '⚖️ Mai 2025 — Selena & Azael', questions: [
+        { id: 'azael_parchemin_jugement', year: '2025', text: 'Mai 2025 : Azael remettait le parchemin pour le début des jugements des âmes à Selena ?', claim: 'Mai 2025.' },
+        { id: 'auberge_saurender', year: '2025', text: 'Mai 2025 : auberge Saurender ochesterait un casino + ventes spéciales aux saveurs de Sauron ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '🧪 Octobre 2025 — Maxim Morbus & Slime', questions: [
+        { id: 'maxim_tournee', year: '2025', text: 'Octobre 2025 : Maxim Morbus a fait le tour des terres ?', claim: 'Octobre 2025.' },
+        { id: 'slime_abelotte', year: '2025', text: 'Octobre 2025 : Slime de Abelotte (propriété aquatique) introduite ?', claim: 'Octobre 2025.' },
+      ]},
+      { title: '🎴 Lore — Panthéon Oz', questions: [
+        { id: 'pantheon_doc', year: 'lore', text: 'Le document "Quêtes panthéon Oz" (2.3 Mo) est-il toujours d\'actualité ?', claim: 'Document existant.' },
+        { id: 'palace_city_temple', year: 'lore', text: 'Structure d\'Oz : Palace, City, People, Temple ?', claim: 'Mentions LORE MASTER.' },
+        { id: 'echoppe_yuki_role', year: 'lore', text: 'L\'échoppe de Yuki = lieu central du commerce magique en Royolo ?', claim: 'Multiple sources.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Oz manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore Oz manquants ?', textOnly: true },
-        { id: 'oz_quest_2026', text: 'Quêtes Oz prévues pour 2026 ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Oz importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore Oz anciens manquants ?', textOnly: true },
+        { id: 'oz_pantheon_detail', text: 'Quels sont les dieux exacts du panthéon Oz ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -647,48 +694,73 @@ const PEOPLES = {
     name: 'Peuple des Sables',
     who: 'Jacinthe, Max',
     sections: [
-      { title: '👑 Royauté & Vampires', questions: [
-        { id: 'akasha_reine', text: 'Akasha = Reine, élue d\'Osiris, vampire ?', claim: 'Élue d\'Osiris. Vampire.' },
-        { id: 'nefertiti', text: 'Néfertiti = 1ère conseillère, vampire, "plume d\'Osiris" ?', claim: 'Soeur de Mérina. Mère de Ramzès.' },
-        { id: 'ramzes_prince', text: 'Ramzès = prince vampire des sables ?', claim: 'Fils de Néfertiti.' },
-        { id: 'merina', text: 'Mérina = soeur de Néfertiti, vampire ?', claim: 'Confirmé.' },
-        { id: 'vampires_count', text: 'Moins de 20 vampires des sables existent ?', claim: 'Plusieurs millénaires d\'existence chacun. Plus jeune : Iqbal (récent trésorier).' },
-        { id: 'iqbal_jeune', text: 'Iqbal = plus jeune vampire connu, trésorier royal ?', claim: 'Récent.' },
+      { title: '👑 Lore — Vampires & Royauté', questions: [
+        { id: 'akasha_morsures', year: 'lore', text: 'Akasha a mordu Néfertiti et Mérina (sa jeune sœur) — Néfertiti a créé Ramzès ?', claim: 'Sables 101.' },
+        { id: 'plume_osiris', year: 'lore', text: 'Néfertiti = "plume d\'Osiris", titre de 1ère conseillère ?', claim: 'Sables 101.' },
+        { id: 'vampires_moins_20', year: 'lore', text: 'Moins de 20 vampires des sables existent (plusieurs millénaires d\'existence) ?', claim: 'Sables 101.' },
+        { id: 'iqbal_jeune_tresorier', year: 'lore', text: 'Iqbal = plus jeune vampire des sables connu, récent trésorier royal ?', claim: 'Sables 101.' },
       ]},
-      { title: '🏛️ 4 régions politiques', questions: [
-        { id: 'couronne_symbel', text: 'Terres de la Couronne (Vizir Symbel) — Capitale + Amounaptra + Vallée interdite + Académie Thot ?', claim: '40% population.' },
-        { id: 'nord_akaton', text: 'Nord (famille Rahim, Akaton ex-El-Mouille) — Keltar + Shérazad ?', claim: 'Plus grand nombre de priants d\'Horus.' },
-        { id: 'centre_ankhara', text: 'Centre (famille Ankhara) — Tanis + Memphis ?', claim: 'Tanis ancienne capitale, Memphis grand port côte Est.' },
-        { id: 'sud_zarfar', text: 'Sud (Darius Zarfar = homme le plus riche du monde) — Miriel + Karnak + Port-au-Rhum + Abydos ?', claim: 'Plus grand nombre d\'esclaves ET de priants d\'Isis.' },
+      { title: '🏛️ Lore — Géographie 4 régions', questions: [
+        { id: 'aramek_coeur', year: 'lore', text: 'Aramek (cité d\'or) = cœur d\'Héliopolis, vallée d\'Abu Symbel (40% pop) ?', claim: 'Sables 101.' },
+        { id: 'darius_riche', year: 'lore', text: 'Darius Zarfar = l\'homme le plus riche du monde (gouverneur Sud) ?', claim: 'Sables 101.' },
+        { id: 'akaton_ex_el_mouille', year: 'lore', text: 'Akaton (Nord) = ex-El-Mouille, ex-territoire sacmousen depuis 13+ ans ?', claim: 'Sables 101.' },
+        { id: 'sherazad_falaise', year: 'lore', text: 'Shérazad = port récent sur falaise (Nord) ?', claim: 'Sables 101.' },
+        { id: 'port_au_rhum_ex', year: 'lore', text: 'Port-au-Rhum = ex-garnison lossadonienne, seigneur Rhum ?', claim: 'Sables 101.' },
+        { id: 'abydos_celebre', year: 'lore', text: 'Abydos = "tristement célèbre" (Sud) ?', claim: 'Sables 101.' },
       ]},
-      { title: '⚔️ Sacmousens', questions: [
-        { id: 'xerxes_disparu', text: 'Xerxès toujours disparu, guerre de succession ?', claim: 'Apophis dominante en territoire sacmousen depuis chute de Sauron.' },
-        { id: 'apophis_seth', text: 'Apophis domine actuellement (vs Seth) chez les Sacmousens ?', claim: 'Auparavant partagés.' },
-        { id: 'banquet_3princes', text: 'Banquet 3 princes sacmousens — morts en Mai 2026 ?', claim: 'Tués/morts à vue, finis dans tapis hors Royolo avec dague dagengy. Drakos a envoyé missive.' },
-        { id: 'maxor_akasha_mariage', text: 'Maxor a écrit à Akasha pour proposer mariage ?', claim: 'Mai 2026.' },
+      { title: '🛐 Lore — Cultes & Tolérance MV', questions: [
+        { id: 'soutek_brakan_fondation', year: 'lore', text: 'Soutek créé suite aux actions des habitants de l\'avant-poste (chasseurs de sbires de Seth) ?', claim: 'Sables 101.' },
+        { id: 'soutek_seth_dangerous', year: 'lore', text: 'Comparer Soutek à Seth est mal vu/dangereux ?', claim: 'Sables 101.' },
+        { id: 'mv_osiris', year: 'lore', text: 'Tolérance MV chez Osiris/Maât = uniquement vampires des sables ?', claim: 'Sables 101.' },
+        { id: 'mv_thot', year: 'lore', text: 'Tolérance MV chez Thot = momies dotées de conscience uniquement ?', claim: 'Sables 101.' },
+        { id: 'mv_anubis', year: 'lore', text: 'Tolérance MV chez Anubis = avec ou sans conscience (chacals MV) ?', claim: 'Sables 101.' },
       ]},
-      { title: '🌅 Cultes & Soutek', questions: [
-        { id: 'osiris_seul', text: 'Osiris seul prévaut sur l\'Ishra (cultes mineurs : Amon, Râ, Amonrâ) ?', claim: 'Confirmé Sables 101.' },
-        { id: 'soutek_brakan', text: 'Brakan de Drakiniev = 1er templier de Soutek ?', claim: 'Soutek créé par habitants de l\'avant-poste.' },
-        { id: 'isis_decorrupted', text: 'Cimetière + puit Isis décorrompus en Mai 2026 (3 cérémonies) ?', claim: 'Drakos 117, Malak min 50, Maxor Jr 10. Corruption terminée.' },
+      { title: '🐍 Mai 2022 — Sacmoussens & Homme oiseau', questions: [
+        { id: 'zandra_sacmoussen_2022', year: '2022', text: 'Mai 2022 : Visite de Zandra pour parler du clan des Sacmoussen ?', claim: 'Mai 2022.' },
+        { id: 'homme_oiseau_justice', year: '2022', text: 'Mai 2022 : "Homme oiseau dieu de la justice" (Pascal) ?', claim: 'Mai 2022.' },
       ]},
-      { title: '🏺 Couronne & Joyau de Manwë', questions: [
-        { id: 'ratelle_couronne', text: 'Ratelle Ti-poil a rapporté la couronne à Numénor (et marteau Bécil) ?', claim: 'Mai 2026. Forge Bécil 30 min, approuvée par Mathieux.' },
-        { id: 'couronne_pas_benie', text: 'La couronne N\'EST PAS bénie (joueurs n\'ont pas dit "Par le pouvoir de... Bénédiction") ?', claim: 'Conséquence à voir.' },
+      { title: '⚔️ Mai 2023 — Lilith & Frost', questions: [
+        { id: 'lilith_zandra_choix', year: '2023', text: 'Mai 2023 : Zandra (Coco) venait voir Lilith pour son choix de marier un Sacmoussen ?', claim: 'Mai 2023.' },
+        { id: 'sacmoussen_fleurs_chocolat', year: '2023', text: 'Mai 2023 : un Sacmoussen apportait fleurs et chocolat à Lilith comme cadeau d\'avant mariage ?', claim: 'Mai 2023.' },
+        { id: 'frost_damaskinos_perdu', year: '2023', text: 'Frost (Ben) = création de Papa Damaskinos, perdue en Mai 2023 (avertissement Nissa/Nomak) ?', claim: 'Mai 2023.' },
       ]},
-      { title: '⚖️ 16 Lois de la Maât', questions: [
-        { id: 'maat_16_actives', text: '16 Lois de la Maât toujours en vigueur ?', claim: 'Apportées de l\'ancienne Kalindra.' },
-        { id: 'esclaves_serfs', text: 'Distinction Esclaves vs Serfs encore valable ?', claim: 'Esclaves : à perpétuité. Serfs : services à vie contre rémunération. Mobilité possible.' },
-        { id: 'polygamie_ok', text: 'Polygamie/polyandrie acceptées (Akasha + Néfertiti ont harems) ?', claim: 'Confirmé Sables 101.' },
+      { title: '💍 Novembre 2023 — Mariage Lilith/Sacmoussen', questions: [
+        { id: 'mariage_lilith', year: '2023', text: 'Novembre 2023 : Mariage de Lilith et Sacmoussen (Seth) à l\'auberge de Yuki à midi ?', claim: 'Novembre 2023.' },
+        { id: 'akasha_garde_mariage', year: '2023', text: 'Novembre 2023 : Akasha présente au mariage avec un garde, Zahira aussi ?', claim: 'Novembre 2023.' },
+        { id: 'akasha_temples_carnage', year: '2023', text: 'Novembre 2023 : après le mariage, Akasha apprend que quelqu\'un fait du carnage dans les temples à la cité Impériale ?', claim: 'Novembre 2023.' },
+        { id: 'aurore_chacals', year: '2023', text: 'Novembre 2023 : Aurore se fait sortir du portail par des Chacals et vampires des sables, mais décide de les repousser ?', claim: 'Novembre 2023.' },
       ]},
-      { title: '👤 PNJs Sables', questions: [
-        { id: 'lilith_repr', text: 'Lilith Cromwell Harfez = représentante de l\'avant-poste ?', claim: 'A envoyé missives à Estriak (7 fév) et capitale (5 fév) sur Banquet Iznogood.' },
-        { id: 'estriak_louy', text: 'Estriak (joué par Louy) — toujours actif ?', claim: 'Mentions multiples.' },
-        { id: 'darius_flotepas', text: 'Darius Flotepas — fiche dédiée, rôle ?', claim: 'Fiche existante.' },
+      { title: '🦂 Octobre/Novembre 2023 — Ammit & Amhanet', questions: [
+        { id: 'ammit_homme_scorpion', year: '2023', text: 'Novembre 2023 : créatures d\'Ammit voulaient l\'homme scorpion qui a ouvert le coffre d\'Ammit ?', claim: 'Novembre 2023.' },
+        { id: 'amhanet_corps_dieu', year: '2023', text: 'Amhanet voulait l\'homme scorpion pour être le corps de son dieu ?', claim: 'Novembre 2023.' },
+        { id: 'amhanet_dague_amit', year: '2024', text: 'Octobre 2024 : Amhanet sortait avec la dague (sans la gemme) d\'Amit pour localiser la gemme sur les terres ?', claim: 'Octobre 2024.' },
+      ]},
+      { title: '🩸 Mai 2024-2025 — Frost décimé', questions: [
+        { id: 'iqbal_quete_vampires', year: '2024', text: 'Mai 2024 : quête des vampires pour Iqbal active ?', claim: 'Mai 2024.' },
+        { id: 'frost_decimation', year: '2025', text: 'Mai 2025 : "fin de Frost" + Chasseurs de Bastet préparaient la chasse aux créatures de Sauron ?', claim: 'Mai 2025.' },
+        { id: 'alek_faucheur', year: '2025', text: 'Alek = un des derniers Faucheurs de Frost avec conscience ?', claim: 'Mai 2025.' },
+        { id: 'abdul_isis', year: '2025', text: 'Abdul = mentor de prêtres d\'Isis + quêtes pour surprestige ?', claim: 'Mai 2025.' },
+        { id: 'youssef_louy', year: '2025', text: 'Youssef = responsable des temples et autels du PDS en Royolo (joué par Louy) ?', claim: '2025.' },
+      ]},
+      { title: '🐺 Juin 2025 — Drakos chacal', questions: [
+        { id: 'gabriel_anubis', year: '2025', text: 'Juin 2025 : Gabriel = priant d\'Anubis pour changer la race de Drakos en chacal ?', claim: 'Juin 2025.' },
+        { id: 'drakos_perd_drow', year: '2025', text: 'Drakos perdait sa race de Drow par malédiction d\'Anubis (eau pure + cendres + 4 cimetières) ?', claim: 'Juin 2025.' },
+        { id: 'drakos_pretre_garde', year: '2025', text: 'Drakos conservait sa classe de base de prêtre, perdait sa prestige Nécro ?', claim: 'Juin 2025.' },
+        { id: 'drakos_guerit_ishra', year: '2025', text: 'Drakos chacal devait être guéri par un priant d\'une divinité de l\'Ishra seulement ?', claim: 'Juin 2025.' },
+      ]},
+      { title: '👶 Juin 2025 — Enfants de Lilith', questions: [
+        { id: 'enfants_lilith_morts', year: '2025', text: 'Juin 2025 : enfants de Lilith attaqués durant l\'hiver, morts (un rattel + une chatte de Bastet) ?', claim: 'Juin 2025.' },
+        { id: 'zahira_zajirah_isis', year: '2025', text: 'Zajirah/Zahira = prêtresse d\'Isis venue procéder à leur "mort née" ?', claim: 'Juin 2025.' },
+        { id: 'lilith_nomme_chatte', year: '2025', text: 'Lilith devait nommer la chatte de Bastet, Ti-Poil son fils — pour empêcher Sauron d\'attenter aux corps ?', claim: 'Juin 2025.' },
+        { id: 'osiris_anubis_apophis', year: '2025', text: 'Prêtres d\'Osiris + Anubis + Apophis devaient préparer le cimetière + tombes pour les enfants ?', claim: 'Juin 2025.' },
+      ]},
+      { title: '🌅 Octobre 2025 — Akasha-Simorgh', questions: [
+        { id: 'fin_lien_akasha_simorgh', year: '2025', text: 'Octobre 2025 : Fin du lien Akasha-Simorgh (créatures de Simorgh tentent d\'interrompre) ?', claim: 'Octobre 2025.' },
+        { id: 'eveil_lilith_enfants', year: '2025', text: 'Octobre 2025 (soir) : éveil des esprits des enfants de Lilith, début quête de réincarnation ?', claim: 'Octobre 2025.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Sables manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Sables importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore sables anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -699,48 +771,68 @@ const PEOPLES = {
     name: 'Numénor',
     who: 'Catherine Cusson',
     sections: [
-      { title: '👑 Lignée & Histoire', questions: [
-        { id: 'walsingham_pandor', text: 'Walsingham 1er = intendant Pandor (43e dans la lignée Gondor → Pandor) ?', claim: 'Demi-frère d\'Amandril.' },
-        { id: 'aragorn3_eldo', text: 'Aragorn III (= Ross Oakenshield = réincarnation Aragorn II) = Roi d\'Eldoriath, PAS de Pandor ?', claim: 'Marié à Arwen.' },
-        { id: 'isildor_couronnement', text: 'Couronnement Isildor (Mai 2026) — Roi d\'un bâton et 40 marins ?', claim: 'Couronne n\'a pas allumé (pas vu qu\'elle devait pour être digne).' },
-        { id: 'isildor_consequence', text: 'Quelle conséquence pour Isildor de la couronne non-allumée ?', claim: 'Mentionné dans debrief : "voir pour une conséquence".' },
-        { id: 'ezekiel_seigneur', text: 'Ezekiel devenu seigneur en Mai 2026 ?', claim: 'Confirmé scénario Mai.' },
+      { title: '🏔️ Lore — Île de Numénor', questions: [
+        { id: 'andor_pays_don', year: 'lore', text: 'Andor = "Pays du Don" en quenya ?', claim: 'Numenor 1024.' },
+        { id: 'elenna_etoile_5', year: 'lore', text: 'Elenna = "Vers l\'Étoile" — île en forme d\'étoile à 5 branches ?', claim: 'Numenor 1024.' },
+        { id: 'meneltarma_eru', year: 'lore', text: 'Meneltarma = "Pilier des Cieux" — sanctuaire d\'Eru, seuls les rois peuvent y parler ?', claim: 'Numenor 1024.' },
+        { id: 'tarmasundar_5', year: 'lore', text: '5 Tarmasundar ("Racines du Pilier") se ramifient vers les 5 péninsules ?', claim: 'Numenor 1024.' },
       ]},
-      { title: '🏔️ Île de Numénor', questions: [
-        { id: '6_regions', text: '6 régions de l\'île correctes (5 branches + Mittalmar) ?', claim: 'Forostar, Andustar, Hyarnustar, Hyarrostar, Orrostar, Mittalmar.' },
-        { id: 'maisons_6', text: '6 Maisons : Tarnel, Kardil, l\'Arche, Aldarion, Keffenn, Valamyr ?', claim: 'Avec Maison des Rois (Mittalmar).' },
-        { id: 'meneltarma', text: 'Meneltarma = sanctuaire d\'Eru, seuls les rois peuvent parler au sommet ?', claim: 'Pilier des Cieux. Tombes des rois à la base.' },
-        { id: 'flambeaux_7', text: '7 grands flambeaux du palais (torche d\'Aulë origine) ?', claim: 'Tous éteints par Sauron sauf Manwë (jamais éteint).' },
+      { title: '🏠 Lore — 6 Maisons', questions: [
+        { id: 'tarnel_forostar', year: 'lore', text: 'Maison Tarnel (Forostar) = tour bleue nimbée d\'étoile sur fond gris, "Restons de pierre" ?', claim: 'Numenor 1024.' },
+        { id: 'kardil_andustar', year: 'lore', text: 'Maison Kardil (Andustar) = arbre de Vardarianna sur fond vert ?', claim: 'Numenor 1024.' },
+        { id: 'arche_hyarnustar', year: 'lore', text: 'Maison de l\'Arche (Hyarnustar) = grappe de raisins rouge ?', claim: 'Numenor 1024.' },
+        { id: 'aldarion_hyarrostar', year: 'lore', text: 'Maison d\'Aldarion (Hyarrostar) = fleur de lys irisée sur fond blanc ?', claim: 'Numenor 1024.' },
+        { id: 'keffenn_orrostar', year: 'lore', text: 'Maison Keffenn (Orrostar) = 3 tiges de blé doré sur fond bleu ?', claim: 'Numenor 1024.' },
+        { id: 'valamyr_emerie', year: 'lore', text: 'Maison Valamyr (Emerië) = cheval blanc sur gris ?', claim: 'Numenor 1024.' },
+        { id: 'rois_arbre_blanc', year: 'lore', text: 'Maison des Rois (Arandor) = arbre blanc entouré de 14 étoiles sur fond bleu sombre ?', claim: 'Numenor 1024.' },
       ]},
-      { title: '🌊 Destruction de Numénor', questions: [
-        { id: 'destruction_4', text: '4 figures de la destruction : Eru (pouvoir) + Manwë (ouragan) + Ulmo (tsunami) + Nessa (vitesse) ?', claim: 'Confirmé Numénor 1024.' },
-        { id: 'erreurs_5', text: '5 erreurs des Elfes envers Numénor ?', claim: 'Immortalité, politique, distance, idéalisation Aman, Sauron.' },
-        { id: 'fideles', text: 'Fidèles vs Hommes du Roi — encore pertinent dans le lore actuel ?', claim: 'Fidèles à Rómenna avant la chute, ont fui avec Elendil.' },
+      { title: '🔥 Lore — Palais & 7 Flambeaux', questions: [
+        { id: 'palais_amandil_or', year: 'lore', text: 'Palais d\'Amandil rebaptisé Ar-Pharâzon (recouvert de feuilles d\'or) ?', claim: 'Numenor 1024.' },
+        { id: 'flambeaux_7_ailes', year: 'lore', text: '7 grands flambeaux : trône (Tar-Minyatur) + étoiles + forge + casernements + jardins + bibliothèque + cimetière des rois ?', claim: 'Numenor 1024.' },
+        { id: 'manwe_jamais_eteint', year: 'lore', text: 'Sauron a éteint tous les flambeaux SAUF celui de Manwë (jamais éteint) ?', claim: 'Numenor 1024.' },
       ]},
-      { title: '⚔️ Quêtes Valar Mai 2026', questions: [
-        { id: 'quete_ulmo_4parts', text: 'Quête Ulmo : bénir bénitier + corne + rivière Kohaku + Haku ?', claim: 'Mai 2026 : envoyé d\'Ulmo. Cric en charge.' },
-        { id: 'ezekiel_tulkas', text: 'Ezekiel quête prestige Tulkas — sanctuaire ancien Horde du Chaos ?', claim: 'Niveau 32, 5 levels en retard.' },
-        { id: 'yavanna_reveille', text: 'Yavana réveillée en Mai 2026 (cérémonie du printemps) ?', claim: 'Élanoriens présents, Numénor (Aramil très présent), pas de nain.' },
-        { id: 'arbre_numenor', text: 'Arbre de Numénor à protéger — première quête : trouver l\'arbre ?', claim: 'PNJ et joueurs ne savaient pas où.' },
+      { title: '👑 Lore — Rois de Numénor', questions: [
+        { id: 'elros_choix_hommes', year: 'lore', text: 'Elros (fils d\'Eärendil, frère d\'Elrond) = 1er roi (Tar-Minyatur), choisit les Hommes ?', claim: 'Numenor 1024.' },
+        { id: 'tar_aldarion_loi', year: 'lore', text: 'Tar-Aldarion = 6e roi, modifia la loi pour permettre Tar-Ancalimë (1ère reine) ?', claim: 'Numenor 1024.' },
+        { id: 'tar_atanamir_rejet', year: 'lore', text: 'Tar-Atanamir le Grand = premier roi à rejeter l\'interdit des Valar et refuser d\'abandonner le pouvoir ?', claim: 'Numenor 1024.' },
+        { id: 'ancalimon_partis', year: 'lore', text: 'Sous Tar-Ancalimon = apparition des partis Hommes du Roi vs Fidèles ?', claim: 'Numenor 1024.' },
+        { id: 'adunakhor_blasphème', year: 'lore', text: 'Ar-Adûnakhôr = premier roi sous nom adûnaic (blasphème — "Seigneur de l\'Ouest" réservé à Manwë) ?', claim: 'Numenor 1024.' },
+        { id: 'tar_palantir_repentir', year: 'lore', text: 'Tar-Palantír = avant-dernier roi, repentir, paix aux Fidèles ?', claim: 'Numenor 1024.' },
+        { id: 'ar_pharazon_usurpation', year: 'lore', text: 'Ar-Pharazôn = usurpateur, épousa de force Tar-Miriel (sa cousine) ?', claim: 'Numenor 1024.' },
       ]},
-      { title: '👥 PNJs Numénor', questions: [
-        { id: 'aramil_archpretre', text: 'Aramil = Arch prêtre des Valars (Eldoriath et Valinor) ?', claim: 'Versions 50 lunes et pré-50 lunes existent.' },
-        { id: 'becil_forge', text: 'Bécil le nain = forgeron de la couronne de Manwë + sauveur de Maniel ?', claim: 'Mai 2026 : forge 30 min approuvée par Mathieux. Sauve Maniel du portail Illithid.' },
-        { id: 'iris_morte', text: 'Iris (Zazou) = feue mage élue d\'Ulmo, prise par plan des morts de Simorgh ?', claim: 'Avait renvoyé les Silmarils à leurs places précédentes après Feanor mort-vivant.' },
-        { id: 'jacob_simon', text: 'Jacob et Simon — quêtes de classe encore actives ?', claim: 'Document existe.' },
+      { title: '🌊 Lore — Destruction', questions: [
+        { id: '4_destructeurs', year: 'lore', text: '4 figures de la destruction : Eru (pouvoir) + Manwë (ouragan) + Ulmo (tsunami) + Nessa (vitesse) ?', claim: 'Numenor 1024.' },
+        { id: 'amandil_disparu', year: 'lore', text: 'Amandil (chef des Fidèles) partit prévenir les Valar et nul ne le revit jamais ?', claim: 'Numenor 1024.' },
+        { id: '9_navires_exode', year: 'lore', text: '9 navires (4 Elendil, 3 Isildur, 2 Anárion) = exode des Fidèles ?', claim: 'Numenor 1024.' },
       ]},
-      { title: '🌫️ Dunédains', questions: [
-        { id: 'dunedains_lifespan', text: 'Dunédains vivent 150-250 ans en moyenne ?', claim: 'Aragorn II atteignit 300+ ans.' },
-        { id: 'dunedains_pds', text: 'Communauté Dunédains au Peuple des Sables (rumeur) ?', claim: '"Pupille de Numenor" = surnom d\'un noble.' },
-        { id: 'numenoriens_noirs', text: 'Numénoriens noirs servants de Sauron au Mordor — toujours actifs ?', claim: 'Très peu nombreux mais très puissants.' },
+      { title: '👑 Lore — Rois Gondor → Pandor', questions: [
+        { id: 'meneldil_dernier_ne', year: 'lore', text: 'Meneldil = 4e fils d\'Anárion, dernier né à Numénor avant destruction ?', claim: 'Numenor 1024.' },
+        { id: 'lutte_fratricide', year: 'lore', text: 'Lutte Fratricide = guerre civile suite à la mort de Valacar (fils d\'Eldacar mi-Northman) ?', claim: 'Numenor 1024.' },
+        { id: 'castamir_umbar', year: 'lore', text: 'Castamir l\'Usurpateur, vaincu par Eldacar — fils et partisans ont fui à Umbar ?', claim: 'Numenor 1024.' },
+        { id: 'earnur_disparu', year: 'lore', text: 'Eärnur = dernier roi du Gondor, releva le défi du Roi-Sorcier à Minas Morgul, disparu ?', claim: 'Numenor 1024.' },
+        { id: 'aragorn_300ans', year: 'lore', text: 'Aragorn II atteignit 300+ ans (Dunédains 4e âge = 150-250 ans en moyenne) ?', claim: 'Numenor 1024.' },
+        { id: 'jean_francois_400', year: 'lore', text: 'Jean-François 1er = "roi fantôme", règne de 400+ ans, tombeau en Royolo ?', claim: 'Numenor 1024.' },
+        { id: 'amandril_couronnement', year: 'lore', text: 'Amandril poignardé pendant son couronnement par celui tenant le coussin (dague cachée) ?', claim: 'Numenor 1024.' },
+        { id: 'eldarion_roi_soleil', year: 'lore', text: 'Eldarion Anárion Titaharann (fils Elessar/Arwen) = "roi soleil", mort par attaque orcs/gobelins ?', claim: 'Numenor 1024.' },
       ]},
-      { title: '🏛️ Pandor (continuité)', questions: [
-        { id: '43_rois', text: '43 rois historiques du Gondor → Pandor ?', claim: 'De Elendil à Walsingham 1er.' },
-        { id: 'jean_francois', text: 'Jean-François 1er "roi fantôme" — règne de 400+ ans ?', claim: 'Tombeau en Royolo. 39e roi.' },
+      { title: '🌫️ Mai 2025 — Communautés Dunédains', questions: [
+        { id: 'representant_dunedain', year: '2025', text: 'Mai 2025 : représentant d\'une communauté Dunédains venait voir la nouvelle colonie ?', claim: 'Mai 2025.' },
+        { id: 'sphinx_magie_101', year: '2025', text: 'Mai 2025 : sortie de sphinx pour informer les nouveaux mages/prêtres + mini cours magie 101 ?', claim: 'Mai 2025.' },
+        { id: 'conclave_dunedains', year: '2025', text: 'Mai 2025 : Conclave des Dunédains samedi matin (Louy, Danielle + 2 autres) ?', claim: 'Mai 2025.' },
+        { id: 'celebrimbor_retour_2025', year: '2025', text: 'Mai 2025 : Retour de Celebrimbor au portail samedi PM 14h00 (Hugo) ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '⚔️ Juin 2025 — Marchand Dunedain', questions: [
+        { id: 'gabriel_marchand_pretre', year: '2025', text: 'Juin 2025 : Gabriel = marchand Dunedain et prêtre du Luminis (mentorat 2 nouveaux prêtres) ?', claim: 'Juin 2025.' },
+        { id: 'recette_eau_benite', year: '2025', text: 'Juin 2025 : recette pour créer plus d\'une dose d\'eau bénite par lune doit être apprise en Royolo ?', claim: 'Juin 2025.' },
+        { id: 'elanor_pas_guerre', year: '2025', text: 'Juin 2025 : la nation d\'Elanor ne prendrait probablement pas part à la guerre à venir ?', claim: 'Juin 2025.' },
+        { id: 'iles_roc_indecises', year: '2025', text: 'Juin 2025 : les îles de Roc à convaincre (ne semblent pas prendre un côté) ?', claim: 'Juin 2025.' },
+        { id: 'sacmousens_apophis', year: '2025', text: 'Juin 2025 : les Sacmousens prient majoritairement Apophis désormais (hargne pour Pandor) ?', claim: 'Juin 2025.' },
+        { id: 'valinor_isolement', year: '2025', text: 'Juin 2025 : Valinor n\'est pas sorti de son isolement aux dernières nouvelles ?', claim: 'Juin 2025.' },
+        { id: 'foret_noire_guerres', year: '2025', text: 'Juin 2025 : plusieurs guerres dans la Forêt noire ?', claim: 'Juin 2025.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Numénor manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Numénor importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore Numénor anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -751,45 +843,81 @@ const PEOPLES = {
     name: 'Nazzakri (Orcs)',
     who: 'Benoît (Estann), Cric, Pat',
     sections: [
-      { title: '⚔️ 4 Grands Clans', questions: [
-        { id: 'oeil_sauron', text: 'Clan de l\'Œil — Barak Dûr, Sauron dirigeant ?', claim: 'Douves de lave de l\'Orodruin, construction 600 ans.' },
-        { id: 'morgul_complet', text: 'Clan Morgul — Roi Sorcier d\'Angmar + Gothmog (stratège) + Gar\'Tang (shaman aveugle) ?', claim: 'Esprits Air et Terre. Feelbeasts. Vallée de Morgul.' },
-        { id: 'profanateur_complet', text: 'Clan Profanateur — Dol Guldur, Azog + Malik Urbar (shaman blanc) ?', claim: 'Forêt Noire NW. Cavaliers wargs. Esprit Terre majeur.' },
-        { id: 'enchaine_complet', text: 'Clan Enchaîné — Guruk-Targ, Garg-Tar Poings-de-chaînes ?', claim: 'Nurmen. Seul lac du Mordor. Ogres, trolls, caragors, Graugs.' },
+      { title: '🏰 Lore — Mordor 1025', questions: [
+        { id: 'mordor_4_grands_4_mineurs', year: 'lore', text: '4 grands clans (Œil/Morgul/Profanateur/Enchaîné) + 4 mineurs (Écorcheur/Warg Sombre/Mort Blanche/Ravageurs) ?', claim: 'Mordor 1025.' },
+        { id: 'orodruin_lave', year: 'lore', text: 'Barak Dûr a des douves de lave alimentées depuis l\'Orodruin (construite en 600 ans) ?', claim: 'Mordor 1025.' },
+        { id: 'morgul_air_terre', year: 'lore', text: 'Clan Morgul = esprits Air et Terre + Feelbeasts (wyvernes corrompues) ?', claim: 'Mordor 1025.' },
+        { id: 'gargouilles_dissipation', year: 'lore', text: 'Minas Morgul a des gargouilles dissipant les magies non-Mordor ?', claim: 'Mordor 1025.' },
+        { id: 'guruktarg_lac', year: 'lore', text: 'Guruk-Targ = un des seuls lieux fertiles du Mordor (avec le seul grand lac) ?', claim: 'Mordor 1025.' },
       ]},
-      { title: '⚔️ 4 Clans Mineurs', questions: [
-        { id: 'ecorcheur', text: 'Écorcheur — Gundhabad, Bolg cannibale (fils Azog) ?', claim: 'Mange cœur/cerveau. Maladies développées.' },
-        { id: 'warg_sombre', text: 'Warg Sombre — Cirith Ungol (Darz-Gurum), Crishnak le borgne ?', claim: 'Excellents éclaireurs. Caragors, Graugs, Ghuls sauvages.' },
-        { id: 'mort_blanche', text: 'Mort Blanche — Lurtz arc de l\'ombre, nomade ?', claim: 'Uruk-kaï secrets de Saroumane. Bombes orcs.' },
-        { id: 'ravageurs', text: 'Ravageurs — Umbar (ruines), Marg le puissant + Irtoum (shaman eau) ?', claim: 'Seul accès maritime. Raids côtes pandoriennes.' },
+      { title: '🐺 Mai 2022 — Mother Wolf & Cérémonies', questions: [
+        { id: 'mother_wolf_louveteau', year: '2022', text: 'Mai 2022 : Mother Wolf transformait un nouveau louveteau (Bibite) ?', claim: 'Mai 2022.' },
+        { id: 'mother_wolf_hybride', year: '2022', text: 'Mai 2022 : Mother Wolf chassait une hybride et la charcutait — atrocités à ne pas exister ?', claim: 'Mai 2022.' },
+        { id: 'stragiphome_thorn', year: '2022', text: 'Mai 2022 : Stragiphome venait voir Thorn (Coco) ?', claim: 'Mai 2022.' },
+        { id: 'commemoration_morts_2022', year: '2022', text: 'Mai 2022 : Cérémonie commémoration des morts — Elvrynn et Jorunn présentes avec offrandes ?', claim: 'Mai 2022.' },
+        { id: 'artemis_mortag_absent', year: '2022', text: 'Mai 2022 : Artémis venait s\'amuser pendant que oncle Mortag n\'était pas là ?', claim: 'Mai 2022.' },
+        { id: 'hirma_lashaman', year: '2022', text: 'Mai 2022 : Hirma Lashaman ("ptite vieille") venait faire un tour ?', claim: 'Mai 2022.' },
       ]},
-      { title: '🪐 Joueurs & Factions 2026', questions: [
-        { id: 'maxor_general', text: 'Maxor Jr s\'est-il bien déclaré général de Morgoth (Banquet 2026) ?', claim: 'Mentionné explicitement dans Debrief.' },
-        { id: 'maxor_tampo', text: 'Maxor Jr et Tampo ont acclamé Sauron (Mai 2026) ?', claim: 'Voir fiche debriefing PNJ.' },
-        { id: 'truite_syndicat', text: 'Syndicat des gobelins (Truite) — toujours actif avec 110% intérêt ?', claim: 'Mai 2026 : joueurs ont volé quand même, Truite prenait 110%.' },
-        { id: 'niz_artefact', text: 'Niz a un artefact corrompu par Sauron à décorrompre ?', claim: 'Mai 2026 : Entité Kashtrya a donné 2 artefacts (1 sain, 1 corrompu).' },
-        { id: 'bloom_succube', text: 'Bloom devenue Succube via démon drèche ?', claim: 'Quête perso fin de classe prêtresse Darkness 15e niveau. Dimanche Mai 2026.' },
+      { title: '♾️ Septembre 2022 — Les Infinis', questions: [
+        { id: 'infinis_7', year: '2022', text: 'Septembre 2022 : Les Infinis sortaient pour tenter de prendre la place des Seigneurs Noirs (7 Infinis) ?', claim: 'Septembre 2022.' },
+        { id: 'destiny_anthares', year: '2022', text: 'Destiny/Destin (Bibite) = équivalent d\'Anthares ?', claim: 'Septembre 2022.' },
+        { id: 'death_simorgh', year: '2022', text: 'Death/Mort (Mathieu) = équivalent de Simorgh ?', claim: 'Septembre 2022.' },
+        { id: 'dream_veles', year: '2022', text: 'Dream/Rêve (Thorn) = équivalent de Vélès ?', claim: 'Septembre 2022.' },
+        { id: 'destruction_crom', year: '2022', text: 'Destruction (Wolfi) = équivalent de Crom ?', claim: 'Septembre 2022.' },
+        { id: 'desire_darkness', year: '2022', text: 'Desire/Désir (Yuki en drag queen) = équivalent de Darkness ?', claim: 'Septembre 2022.' },
+        { id: 'despair_menades', year: '2022', text: 'Despair/Désespoir (Ben/Zuljin) = équivalent de Ménadès ?', claim: 'Septembre 2022.' },
+        { id: 'delirium_danazar', year: '2022', text: 'Delirium/Délire (Coco) = équivalent de Danazar ?', claim: 'Septembre 2022.' },
+        { id: 'sauron_dieu_orcs', year: '2022', text: 'Septembre 2022 : objectif = donner énergie divine aux orcs pour booster Sauron à devenir un dieu à part entière (orcs avec leur dieu à eux) ?', claim: 'Septembre 2022.' },
       ]},
-      { title: '🌑 Captures Illithids', questions: [
-        { id: 'persephone', text: 'Persephone capturée par Illithids ?', claim: 'Banquet 2026.' },
-        { id: 'hyela', text: 'Hyela (chef amazon) capturée ?', claim: 'Banquet 2026.' },
-        { id: 'rhukx', text: 'Rhukx (chef hommes lézard, lien orcs verts) capturé ?', claim: 'Banquet 2026.' },
-        { id: 'mines_de_brume', text: 'Mines de la famille De Brume perdues aux Illithids ?', claim: 'Pierres précieuses.' },
+      { title: '⚔️ Septembre 2022 — Mortag & Démon', questions: [
+        { id: 'mortag_invocation', year: '2022', text: 'Septembre 2022 samedi soir : Invocation d\'un démon majeur par Mortag (cadeau de Darkness pour l\'avoir protégé des Nazguls) ?', claim: 'Septembre 2022.' },
+        { id: 'demon_sacrifice_crom', year: '2022', text: 'Le démon serait sacrifié pour la forge de Crom pour activer une rune de la forge (Bibite jouait le démon) ?', claim: 'Septembre 2022.' },
+        { id: 'epee_mortag_elvrynn', year: '2022', text: 'L\'épée de Mortag fait des siennes — Elvrynn revient avec l\'épée et semble affectée par celle-ci ?', claim: 'Septembre 2022.' },
+        { id: 'crystal_hebenezaire', year: '2022', text: 'Septembre 2022 : Arthémis venait voir Crystal et Hébénézaire ?', claim: 'Septembre 2022.' },
       ]},
-      { title: '🛐 Seigneurs Noirs (liens)', questions: [
-        { id: 'simorgh_yavanna', text: 'Simorgh = lié à Yavanna (Aratar) et Estë (Vala) ?', claim: 'Document liens Seigneurs Noirs.' },
-        { id: 'cardinal_septs', text: 'Cardinal des Septs (Cirbex et Roberte) — quête anneaux Sauron ?', claim: 'Broderie + 6 chandelles à la main. Énigme feu et eau. Plusieurs lunes.' },
-        { id: 'antares_oromer', text: 'Antarès = lié à Oromë (Aratar) et Vairë (Vala) ?', claim: 'Document liens.' },
+      { title: '🦂 Mai 2023 — Démons faibles & Loups blancs', questions: [
+        { id: 'darkness_faible_demons', year: '2023', text: 'Mai 2023 : Darkness "faible", démons sortaient enragés mais pas pleine capacité ?', claim: 'Mai 2023.' },
+        { id: 'marquise_trône', year: '2023', text: 'La Marquise sur le trône tentait de comprendre comment donner force aux démons ?', claim: 'Mai 2023.' },
+        { id: 'cros_givres_alpha', year: '2023', text: 'Cros de Givres (alpha des loups blancs Alvar) cherchait sa femme longtemps disparue (Mother Wolf) en Royolo avec Antharès ?', claim: 'Mai 2023.' },
+        { id: 'velès_change', year: '2023', text: 'Mai 2023 : Elvrynn/Vélès (Bibite) venait sur les terres "très changée" pour parler au peuple des sables ?', claim: 'Mai 2023.' },
+        { id: 'duchesse_darkness_2_femme', year: '2023', text: 'Mai 2023 : Duchesse de Darkness (2e femme) + ses succubes + diablotin venaient avec Siriac et Mortag ?', claim: 'Mai 2023.' },
       ]},
-      { title: '🐍 Plans & Quêtes', questions: [
-        { id: 'amazones_corbeaux', text: 'Amazones veulent renaître clan Corbeaux (Simorgh, œuf d\'autruche nécrotique) ?', claim: 'À faire en Juin 2026.' },
-        { id: 'cric_stat', text: 'Cric chez Stat — maladie à assimiler ?', claim: 'Mai 2026.' },
-        { id: 'disciple_danasar', text: 'Disciple de Danasar — voir priants ?', claim: 'À faire plus tard.' },
-        { id: 'jeune_skaven', text: 'Le jeune transformé en Skaven (enfant de Gobelin) ?', claim: 'Samedi Mai 2026.' },
+      { title: '🐺 Mai 2024 — Reine Témérienne & Amazones', questions: [
+        { id: 'mother_wolf_vengeance_2024', year: '2024', text: 'Mai 2024 : Mother Wolf VENGEANCE car la princesse est morte (Bibite) ?', claim: 'Mai 2024.' },
+        { id: 'reine_temerienne_2024', year: '2024', text: 'Mai 2024 : Pascal sortait la Reine Témérienne pour Nazzakri + sa sœur qui voulait la sauver ?', claim: 'Mai 2024.' },
+        { id: 'amazones_artemis_menades', year: '2024', text: 'Mai 2024 : Amazones venaient voir les priants d\'Anthares — Artémis infectée de Ménadès ?', claim: 'Mai 2024.' },
+      ]},
+      { title: '⚖️ Novembre 2023 — Kashtrya', questions: [
+        { id: 'kashtrya_regente', year: '2023', text: 'Novembre 2023 : Kashtrya = régente de l\'île de Nazzakri, venait montrer son mécontentement face aux Nazzarois envers les Seigneurs Noirs ?', claim: 'Novembre 2023.' },
+        { id: 'iwasaki_kosuke_neveu', year: '2023', text: 'Novembre 2023 : Rencontre à Nazzakri entre le neveu déchu de la Aijin Iwasaki Kosuke et les Sindors ?', claim: 'Novembre 2023.' },
+      ]},
+      { title: '🔥 Mai 2025 — Brèche du Néant & Cathédrale', questions: [
+        { id: 'cardinal_cercle_noir_2025', year: '2025', text: 'Mai 2025 : Cardinale du cercle noir demandait une cérémonie samedi pour les Seigneurs Noirs (essence retournera dans des artefacts) ?', claim: 'Mai 2025.' },
+        { id: 'cathedrale_due', year: '2025', text: 'Les Nazzarois doivent une cathédrale aux Seigneurs Noirs ?', claim: 'Mai 2025.' },
+        { id: 'breche_neant_danazar', year: '2025', text: 'Mai 2025 : Mage de Danazar venait fermer la brèche du néant au Nazzaroi ?', claim: 'Mai 2025.' },
+        { id: 'fosse_monstres_motherwolf', year: '2025', text: 'Mai 2025 : tentative ouverture fosse aux monstres pour sortir Mother Wolf et Crocs Blanc (sinon harpie, mante religieuse géante, murlocs) ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '🌑 Juin 2025 — Sindoré & Lycan', questions: [
+        { id: 'sindore_stat', year: '2025', text: 'Juin 2025 : Sindoré venaient voir leur nouveau membre Stat (classe prestige) ?', claim: 'Juin 2025.' },
+        { id: 'rawgoth_lycan', year: '2025', text: 'Juin 2025 : Nazguls répondaient à une lettre envoyée par Rawgoth le lycan de Nazzakri ?', claim: 'Juin 2025.' },
+      ]},
+      { title: '🕷️ Mai 2025 — Capture de territoires', questions: [
+        { id: 'nazguls_yeux_sauron', year: '2025', text: 'Mai 2025 : Nazguls cachaient des "yeux de Sauron" dans les palissades — passer une nuit sans être découverts pour capturer les territoires ?', claim: 'Mai 2025.' },
+        { id: 'serviteur_sauron_temp', year: '2025', text: 'Mai 2025 : Nazguls pouvaient transformer 1 joueur en serviteur de Sauron temporaire (tuer + marque + 5 min de prière, +10 PV pour 2h) ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '🔥 Octobre 2025 — Conseil de la lune noire', questions: [
+        { id: 'conseil_lune_noire', year: '2025', text: 'Octobre 2025 = "Conseil de la lune noire" — épreuves des Seigneurs Noirs ?', claim: 'Octobre 2025.' },
+        { id: 'crom_marteau_65lbs', year: '2025', text: 'Crom (Danielle) — capture the flag avec marteau de 65 lbs comme "flag" ?', claim: 'Octobre 2025.' },
+        { id: 'simorgh_flashlight', year: '2025', text: 'Simorgh (Eli) — flash light tag (immobile sous lumière sinon mort-vivant) ?', claim: 'Octobre 2025.' },
+        { id: 'menades_marais', year: '2025', text: 'Ménadès (Loïc) — ingrédients pour corrompre le marais ?', claim: 'Octobre 2025.' },
+        { id: 'mystiques_3', year: '2025', text: '3 sorcières de Sauron : L\'Habitante (mage, sceptre), La Nomade (gardienne, bouclier), L\'Ascète (guerrière, dagues) ?', claim: 'Octobre 2025.' },
+        { id: 'armarth_vampire_melkor', year: '2025', text: 'Octobre 2025 : Armarth = vampire de Melkor venu voir Selim, Maxor + 3 priants Melkor ?', claim: 'Octobre 2025.' },
+        { id: 'crepuscule_armath', year: '2025', text: 'Retour d\'Armath avec "Crépuscule" pour visiter des lieux cléricaux ?', claim: 'Octobre 2025.' },
+        { id: 'zorax_morgoth_signes', year: '2025', text: 'Octobre 2025 : Zorax aidait à retirer les signes de Morgoth autour de Nazzakri ?', claim: 'Octobre 2025.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Nazzakri manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Nazzakri importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore Nazzakri anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -800,42 +928,58 @@ const PEOPLES = {
     name: 'Elfes / Eldoriath',
     who: 'Catherine Cusson, Math',
     sections: [
-      { title: '👑 Royauté Eldoriath', questions: [
-        { id: 'elessar_arwen', text: 'Roi Elessar Singolo + Reine Arwen — toujours en place ?', claim: 'Couple royal Eldoriath.' },
-        { id: 'aragorn3', text: 'Aragorn III (= Ross Oakenshield = réincarnation Aragorn II) = Roi d\'Eldoriath ?', claim: 'PAS de Pandor. A épousé Arwen.' },
+      { title: '📜 Lore — Valaquenta', questions: [
+        { id: 'manwe_souffle', year: 'lore', text: 'Manwë Súlimo = vents, foudre, souffle d\'air ?', claim: 'Valaquenta.' },
+        { id: 'varda_etoiles_elbereth', year: 'lore', text: 'Varda Elentári (Elbereth) = créa les étoiles avant l\'éveil des Elfes, plus aimée des Eldar ?', claim: 'Valaquenta.' },
+        { id: 'ulmo_celibataire', year: 'lore', text: 'Ulmo = célibataire, seigneur des eaux, jamais quitté son domaine ?', claim: 'Valaquenta.' },
+        { id: 'aule_mahal_nains', year: 'lore', text: 'Aulë (Mahal) = créa les Sept Pères des Nains dans son impatience ?', claim: 'Valaquenta.' },
+        { id: 'mandos_juge_morts', year: 'lore', text: 'Námo (Mandos) = juge des morts, époux de Vairë ?', claim: 'Valaquenta.' },
+        { id: 'tulkas_dernier_arda', year: 'lore', text: 'Tulkas Astaldo = dernier Vala arrivé en Arda, champion contre Melkor ?', claim: 'Valaquenta.' },
+        { id: 'irmo_lorien_reves', year: 'lore', text: 'Irmo (Lorien) = maître des rêves et visions, époux d\'Estë ?', claim: 'Valaquenta.' },
+        { id: 'nienna_pleureuse', year: 'lore', text: 'Nienna = pleureuse, célibataire, sœur de Mandos et Lorien ?', claim: 'Valaquenta.' },
       ]},
-      { title: '🌟 Élus des Valars', questions: [
-        { id: 'iris_morte', text: 'Iris (Zazou) — décédée, prise par plan des morts de Simorgh ?', claim: 'Élue d\'Ulmo. Avait renvoyé les Silmarils à leurs places après Feanor mort-vivant.' },
-        { id: 'filiel_aule', text: 'Filiel Thel Amarth (Noldor de Tol Hotas) = élu d\'Aulë ?', claim: 'Confirmé.' },
-        { id: 'damien_irmo', text: 'Damien = futur élu d\'Irmo ?', claim: 'Grand prêtre de Tol Hotas.' },
-        { id: 'sid_este', text: 'Sid Felaegun = 1er prêtre d\'Estë depuis longtemps ?', claim: 'An 4 ère des hommes en Royolo.' },
-        { id: 'aramil_versions', text: 'Aramil = Arch prêtre des Valars (versions pré et post 50 lunes) ?', claim: 'Eldoriath et Valinor.' },
-        { id: 'tiltowe_yavanna', text: 'Tiltowë = hiérophante de Yavanna ?', claim: 'Confirmé.' },
-        { id: 'helena_yavanna', text: 'Héléna = princesse élue de Yavanna ?', claim: 'Confirmé.' },
-        { id: 'oromer_elu', text: 'Y a-t-il un élu d\'Oromë actuel ?', claim: 'À déterminer.' },
-        { id: 'manwe_elu', text: 'Y a-t-il un élu de Manwë actuel ?', claim: 'À déterminer.' },
+      { title: '🌟 Lore — Maiar', questions: [
+        { id: 'eonwe_heraut', year: 'lore', text: 'Eönwë = héraut de Manwë ?', claim: 'Valaquenta.' },
+        { id: 'ilmare_fille_varda', year: 'lore', text: 'Ilmarë = suivante de Varda (et fille de Varda/Manwë selon Liste Valars 101) ?', claim: 'Valaquenta + Liste Valars.' },
+        { id: 'osse_uinen', year: 'lore', text: 'Ossë (mers intérieures) + Uinen (eaux calmes, épouse) ?', claim: 'Valaquenta.' },
+        { id: 'melian_thingol_luthien', year: 'lore', text: 'Melian = épouse de Thingol, mère de Lúthien ?', claim: 'Valaquenta.' },
+        { id: 'arien_tilion', year: 'lore', text: 'Arien (Soleil) + Tilion (Lune) après mort des Deux Arbres ?', claim: 'Valaquenta.' },
+        { id: 'salmar_uloumri', year: 'lore', text: 'Salmar = fabricant des Ulúmuri (trompes d\'Ulmo) ?', claim: 'Valaquenta.' },
       ]},
-      { title: '🏰 Eldoriath & Tol Hotas', questions: [
-        { id: 'tol_hotas', text: 'Tol Hotas Synia Sorno = forge d\'Aulë devenue forteresse ?', claim: 'Mention dans la liste des lieux.' },
-        { id: 'thenidiel_quete', text: 'Thénidiel (Alice) en charge de "Make Eldo Great Again" ?', claim: 'Phase 1 : peindre roche elfique + bannières. Banquet/jam Juin.' },
+      { title: '🧙 Lore — Istari (5 mages)', questions: [
+        { id: 'istari_5_mages', year: 'lore', text: '5 Istari : Curunír (Saroumane), Olórin (Gandalf), Aiwendil (Radagast), Alatar, Pallando ?', claim: 'Liste Valars 101.' },
+        { id: 'pallando_temps', year: 'lore', text: 'Pallando = temps, mort, marcheur du temps — récemment retrouvé après méditation aux cavernes de Mandos ?', claim: 'Liste Valars.' },
       ]},
-      { title: '🌿 Cérémonies Mai 2026', questions: [
-        { id: 'printemps_yavana', text: 'Cérémonie du printemps a réveillé Yavana ?', claim: 'Élanoriens, Numénor (Aramil), pas de nain.' },
-        { id: 'arbre_numenor', text: 'Cérémonie pour protéger l\'arbre de Numénor — première quête trouver l\'arbre ?', claim: 'PNJ et joueurs ne savaient pas où.' },
-        { id: 'partage_savoir', text: 'Partage de connaissances / rééducation (maître du savoir) prévu Juin ?', claim: 'À voir.' },
+      { title: '🥚 Lore — Œufs Thaumaturgiques', questions: [
+        { id: '4_sages_oeufs', year: 'lore', text: '4 sages elfiques (Aquma, Nûna, Gawa, 4e inconnu) ont enfermé leurs âmes dans 4 œufs philosophaux lors de la guerre Venger/Seth/Antharès au tombeau de Fenor ?', claim: 'Tome 3 du Livre du Savoir.' },
+        { id: '4e_sage_inconnu', year: 'lore', text: 'Le nom du 4e sage est-il toujours inconnu/secret ?', claim: 'Tome 3.' },
       ]},
-      { title: '🥚 4 Œufs Thaumaturgiques', questions: [
-        { id: 'oeufs_4_sages', text: '4 sages elfiques (Aquma, Nûna, Gawa, 4e inconnu) — âmes dans 4 œufs ?', claim: 'Tome 3 du Livre du Savoir. Lors guerre Venger/Seth/Antharès au tombeau de Fenor.' },
-        { id: '4e_sage', text: 'Le 4e sage — son nom est-il connu ou toujours mystère ?', claim: 'À déterminer.' },
-        { id: 'oeufs_localisation', text: 'Statut/localisation des 4 œufs philosophaux en 2026 ?', claim: 'À déterminer.' },
+      { title: '🌳 Mai 2022 — Galadriel', questions: [
+        { id: 'miroir_galadriel_2022', year: '2022', text: 'Mai 2022 : ramener le miroir de Galadriel ?', claim: 'Mai 2022 (elfes).' },
       ]},
-      { title: '🏛️ Histoire elfique', questions: [
-        { id: 'erreurs_5', text: '5 erreurs des Elfes envers Numénor — connues des elfes actuels ?', claim: 'Immortalité, politique, distance, idéalisation Aman, Sauron.' },
-        { id: 'cuiviénen', text: 'Lac Cuiviénen = lieu d\'éveil des Eldar (Premiers-Nés) ?', claim: 'Mythologie originelle. Aujourd\'hui chez les Duergars.' },
+      { title: '🌳 Septembre 2022 — Océane & Stragifans', questions: [
+        { id: 'oceane_stragifans', year: '2022', text: 'Septembre 2022 : Océanne venait avec Thorn, Stragiphome et les Stragifans (Bibite, Thorn, Coco + enfants) ?', claim: 'Septembre 2022.' },
+      ]},
+      { title: '🌳 Septembre 2022 — Eve la druidesse', questions: [
+        { id: 'eve_druidesse_saisons', year: '2022', text: 'Septembre 2022 dimanche : Eve (druide des saisons) venait voir les elfes pour leur jardins (Coco + ses petits elfes) ?', claim: 'Septembre 2022.' },
+      ]},
+      { title: '🌳 Mai 2024 — Cuiviénen', questions: [
+        { id: 'lac_cuiviénen_eveil', year: 'lore', text: 'Lac Cuiviénen = lieu d\'éveil des Eldar (Premiers-Nés) ?', claim: 'Mythologie originelle.' },
+        { id: 'ichtyos_lac_cuiviénen', year: '2024', text: 'Mai 2024 : parents d\'Ichtyos viennent du Lac Cuiviénen ?', claim: 'Mai 2024.' },
+      ]},
+      { title: '🌳 Mai 2025 — Fyramyr Falenthas', questions: [
+        { id: 'fyramyr_falenthas', year: '2025', text: 'Mai 2025 samedi : Fyramyr = elfe de Falenthas (Louy) qui sortait s\'il y avait des elfes pour discuter de l\'avancement de Sauron ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '👑 Lore — Royauté Eldoriath', questions: [
+        { id: 'elessar_arwen', year: 'lore', text: 'Roi Elessar Singolo + Reine Arwen ?', claim: 'Couple royal Eldoriath.' },
+        { id: 'aragorn3_eldo', year: 'lore', text: 'Aragorn III (= Ross Oakenshield = réincarnation Aragorn II) = Roi d\'Eldoriath, PAS Pandor ?', claim: 'Numenor 1024.' },
+        { id: 'iris_zazou_ulmo', year: 'lore', text: 'Iris (Zazou) = mage élue d\'Ulmo, décédée et prise par le plan des morts de Simorgh ?', claim: 'Lore général.' },
+        { id: 'iris_silmarils_renvoi', year: 'lore', text: 'Iris (Sammy) avait renvoyé les Silmarils à leurs places précédentes après l\'épisode de Feanor mort-vivant ?', claim: 'Document Débat sur le Néant.' },
+        { id: 'aramil_archpretre', year: 'lore', text: 'Aramil = Arch prêtre des Valars (Eldoriath et Valinor) ?', claim: 'Versions pré-50 lunes et post-50 lunes existent.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Elfes manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Elfes importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore Elfes anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -846,40 +990,52 @@ const PEOPLES = {
     name: 'Nains / Khazad',
     who: 'Catherine Cusson, Josué, Math',
     sections: [
-      { title: '⛏️ Cosmologie naine', questions: [
-        { id: 'aule_createur', text: 'Aulë (Mahal) = créateur des Sept Pères des Nains ?', claim: 'Bénis par Eru, dormaient jusqu\'à éveil des Premiers-Nés.' },
-        { id: '2_valars_nains', text: 'Quels sont les 2 Valars que les nains peuvent prier ?', claim: 'Aulë + ? À confirmer (mention Update Nains).' },
-        { id: 'magie_runique', text: 'Magie runique temporaire = forge ET broderie (femmes) ?', claim: 'Confirmé Update Nains.' },
+      { title: '⛏️ Lore — Cosmologie', questions: [
+        { id: 'aule_7_peres', year: 'lore', text: 'Aulë créa les Sept Pères des Nains dans son impatience, bénis par Eru ?', claim: 'Genèse Eru.' },
+        { id: 'nains_dormaient', year: 'lore', text: 'Les Sept Pères dormaient jusqu\'à l\'éveil des Premiers-Nés (Elfes) ?', claim: 'Genèse Eru.' },
+        { id: 'magie_runique_temp', year: 'lore', text: 'Magie naine = runique, temporaire (forge pour hommes, broderie pour femmes) ?', claim: 'Update Nains.' },
+        { id: '9_bagues_sauron', year: 'lore', text: '9 Bagues Naines de Sauron — où sont-elles aujourd\'hui ?', claim: 'Update Nains.' },
       ]},
-      { title: '💍 Bagues de Sauron', questions: [
-        { id: '9_bagues', text: '9 Bagues Naines de Sauron — où sont-elles ?', claim: 'Update Nains mentionne 9 bagues mais sans détails.' },
-        { id: 'bagues_actuelles', text: 'Statut actuel des bagues — possédées, perdues, détruites ?', claim: 'À déterminer.' },
+      { title: '🦄 Mai 2022 — Charley & Yavanna', questions: [
+        { id: 'refaire_runes_moria', year: '2022', text: 'Mai 2022 : refaire les runes de la Moria ?', claim: 'Mai 2022.' },
+        { id: 'yavanna_vana_2022', year: '2022', text: 'Mai 2022 : Yavanna venait voir les nains avec Vana ?', claim: 'Mai 2022.' },
+        { id: 'conseil_marie_recompense', year: '2022', text: 'Mai 2022 : envoyée du conseil des nains (Marie) remettait une récompense à TP et Fael pour avoir aidé l\'avant-poste à reconquérir la Moria ?', claim: 'Mai 2022.' },
       ]},
-      { title: '🏰 Familles naines (Khazad)', questions: [
-        { id: 'familles_principales', text: 'Quelles sont les principales familles naines actuelles ?', claim: 'Document existe mais à développer (basé sur Tolkien).' },
-        { id: 'erebor_moria', text: 'Erebor + Moria — toujours pertinents dans le lore actuel ?', claim: 'Polices de langue distinctes (KhuzdulErebor, Moria Font).' },
+      { title: '🦄 Mai 2023 — Charley & Durin', questions: [
+        { id: 'charley_licorne_durin', year: '2023', text: 'Mai 2023 : Charley la licorne (à Ben) visitait les nains, appelée par Durin ?', claim: 'Mai 2023.' },
+        { id: 'farname_education_2023', year: '2023', text: 'Mai 2023 : Farname (Loïc) avait une "éducation draconienne" ?', claim: 'Mai 2023.' },
       ]},
-      { title: '🌑 Nains Noirs de Crom', questions: [
-        { id: 'astragoth_legion', text: 'Astragoth Main-de-Métal = chef de la Légion (forgerons) ?', claim: 'Crée armements, armures, bêtes métalliques, engins de guerre.' },
-        { id: 'drazhoath_disciples', text: 'Drazhoath Flamme-Éternelle = chef des Disciples (prêtrise) ?', claim: 'Alimente bêtes créées par la Légion. Flamme éternelle.' },
-        { id: 'zhatan_hotes', text: 'Zhatan Le-Noir = chef des Hôtes de Guerres (militaire) ?', claim: 'Premiers au combat, derniers à sortir.' },
-        { id: 'havrid_kherguellan', text: 'Havrid Kherguellan = noble qui a perdu ses 3 familles ?', claim: 'Refondue avec aide de Crom. Gestion du grand conseil (Conclave).' },
-        { id: 'famille_5e', text: 'Possibilité d\'établir une 5e famille (joueurs) ?', claim: 'Mentionné dans les quêtes possibles.' },
+      { title: '🌑 Mai 2024 — Namo', questions: [
+        { id: 'namo_pretre_2024', year: '2024', text: 'Mai 2024 : Prêtre de Namo (Josh) donnait un enseignement sur son Valar (vendredi) ?', claim: 'Mai 2024.' },
+        { id: 'avatar_namo_examen', year: '2024', text: 'Mai 2024 : Avatar de Namo faisait un examen rapide pour évaluer les connaissances des nains (samedi) ?', claim: 'Mai 2024.' },
       ]},
-      { title: '⚒️ Quêtes Nains 2026', questions: [
-        { id: 'becil_couronne', text: 'Bécil = forgeron qui a forgé la couronne de Manwë ?', claim: 'Mai 2026. 30 min, approuvé par Mathieux.' },
-        { id: 'becil_sauve', text: 'Bécil a sauvé Maniel Norrianiss du portail Illithid ?', claim: 'Fin de game Mai 2026.' },
-        { id: 'horgar_quete', text: 'Roi Duergar Horgar Ombre-acier (lac Cuiviénen) = quête métal vivant ?', claim: 'Quantité : 1 armure complète + 1 épée. 3 issues possibles.' },
-        { id: 'horgar_anatar', text: 'Émissaire anonyme (Anatar?) pousse Horgar à exclusivité ?', claim: 'Métal pour peuples "forts" + armée.' },
-        { id: '15_freres', text: '15 frères nains à récupérer (missive juillet) ?', claim: 'Banquet 2026 : attaque dans les mines.' },
+      { title: '🎄 Septembre 2022 — Noël chez les nains', questions: [
+        { id: 'noel_nains_pere_nenelle', year: '2022', text: 'Septembre 2022 : "Noël chez les nains, le père Nénelle doit passer porter des cadeaux" ?', claim: 'Septembre 2022.' },
       ]},
-      { title: '🤝 Relations 2026', questions: [
-        { id: 'commode_dette', text: 'Nains détestent Pandor (dette d\'armures de Commode) ?', claim: 'Banquet 2026 : armures commandées jamais payées.' },
-        { id: 'nain_eldoriath', text: 'Pas de nain au Cérémonie du printemps Mai 2026 (Eldoriath) ?', claim: 'Mentionné explicitement.' },
+      { title: '🪨 Mai 2025 — Vaerhun & Arkenstone', questions: [
+        { id: 'vaerhun_arkenstone', year: '2025', text: 'Mai 2025 : Vaerhun et Duergar — Arkenstone : un chômeur a fait détection bien/mal et a vu du mal ?', claim: 'Mai 2025.' },
+        { id: 'vaerhun_sort_renforce', year: '2025', text: 'Maudit par Vaehraun : à chaque fois qu\'un sort est lancé, ça renforce Vaehraun ?', claim: 'Mai 2025.' },
+      ]},
+      { title: '🪨 Octobre 2024 — Gérard & Game sur Table', questions: [
+        { id: 'gerard_duergar', year: '2024', text: 'Octobre 2024 : Gérard le Duergar = préparation pour la Game sur Table — aider les Duergars à se protéger contre les Illithids (quête Arkenstone donnant accès à de la magie) ?', claim: 'Octobre 2024.' },
+      ]},
+      { title: '🪨 Juin 2025 — Protection Arkenstone', questions: [
+        { id: 'gerard_arkenstone_runique', year: '2025', text: 'Juin 2025 : Gérard le nain — protection de premier niveau sur l\'Arkenstone avec aide des nains (cérémonie de magie runique) ?', claim: 'Juin 2025.' },
+      ]},
+      { title: '🌑 Lore — Nains Noirs de Crom', questions: [
+        { id: 'astragoth_legion', year: 'lore', text: 'Astragoth Main-de-Métal = chef de la Légion (forgerons) ?', claim: 'Doc Nain noir Crom.' },
+        { id: 'drazhoath_disciples', year: 'lore', text: 'Drazhoath Flamme-Éternelle = chef des Disciples (prêtrise, alimente la flamme éternelle) ?', claim: 'Doc Nain noir Crom.' },
+        { id: 'zhatan_hotes', year: 'lore', text: 'Zhatan Le-Noir = chef des Hôtes de Guerres (premiers au combat, derniers à sortir) ?', claim: 'Doc Nain noir Crom.' },
+        { id: 'havrid_3_familles', year: 'lore', text: 'Havrid Kherguellan a perdu ses 3 familles par événement mystérieux, refondue avec aide de Crom ?', claim: 'Doc Nain noir Crom.' },
+        { id: 'conclave_enfers_crom', year: 'lore', text: 'Le Conclave (grand conseil) est hébergé dans les enfers de Crom ?', claim: 'Doc Nain noir Crom.' },
+        { id: 'forges_infernales', year: 'lore', text: 'Forges infernales de Crom = lieu de création des armements et bêtes métalliques de la Légion ?', claim: 'Doc Nain noir Crom.' },
+      ]},
+      { title: '😴 Novembre 2023 — Sylvannus', questions: [
+        { id: 'sylvannus_endormir', year: '2023', text: 'Novembre 2023 : les nains (Valence et Scorpique) ont fait une cérémonie pour endormir Sylvannus — ça a fonctionné (avec Joz et Farname) ?', claim: 'Novembre 2023.' },
       ]},
       { title: '🆓 Ajouts libres', questions: [
-        { id: 'add_pnj', text: 'PNJs Nains manquants ou nouveaux ?', textOnly: true },
-        { id: 'add_lore', text: 'Éléments de lore manquants ?', textOnly: true },
+        { id: 'add_pnj_old', text: 'PNJs Nains importants (2021-2025) à ajouter ?', textOnly: true },
+        { id: 'add_lore_old', text: 'Éléments de lore Nains anciens manquants ?', textOnly: true },
         { id: 'corrections', text: 'Autres corrections importantes ?', textOnly: true },
       ]},
     ]
@@ -891,22 +1047,13 @@ const PEOPLES = {
 // STATE
 // ============================================================
 let state = {};
-try { state = JSON.parse(localStorage.getItem('fleau_challenge_v2') || '{}'); } catch(e) { state = {}; }
+try { state = JSON.parse(localStorage.getItem('fleau_challenge_v4') || '{}'); } catch(e) { state = {}; }
 let currentPeople = null;
 
-// ============================================================
-// UTILS
-// ============================================================
 function escapeHtml(s) {
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function escapeAttr(s) {
-  return String(s||'').replace(/'/g, "\\'");
-}
 
-// ============================================================
-// RENDER PICKER
-// ============================================================
 function renderPicker() {
   const picker = document.getElementById('picker');
   picker.innerHTML = Object.entries(PEOPLES).map(([key, p]) => {
@@ -923,9 +1070,6 @@ function renderPicker() {
   }).join('');
 }
 
-// ============================================================
-// RENDER APP
-// ============================================================
 function renderApp(key) {
   const p = PEOPLES[key];
   if (!p) return;
@@ -960,13 +1104,18 @@ function renderApp(key) {
 
 function renderQuestion(peopleKey, q, qNum) {
   const ans = (state[peopleKey] && state[peopleKey][q.id]) || {};
-  const isAnswered = ans.status || ans.text;
+  const isAnswered = ans.status || (ans.text && ans.text.trim());
   const safeId = `${peopleKey}_${q.id}`;
+  const yearLabel = q.year === 'lore' ? '📚 Lore intemporel' : q.year ? `📅 ${q.year}` : '';
+  const yearClass = q.year === 'lore' ? 'lore' : `y${q.year || ''}`;
 
   if (q.textOnly) {
     return `
       <div class="question ${isAnswered ? 'answered' : ''}">
-        <div class="q-number">Q${qNum} — Réponse libre</div>
+        <div class="q-meta">
+          <span class="q-number">Q${qNum}</span>
+          <span class="q-year">📝 Réponse libre</span>
+        </div>
         <div class="q-text">${escapeHtml(q.text)}</div>
         <textarea
           id="ta_${safeId}"
@@ -982,7 +1131,10 @@ function renderQuestion(peopleKey, q, qNum) {
 
   return `
     <div class="question ${isAnswered ? 'answered' : ''}">
-      <div class="q-number">Q${qNum}</div>
+      <div class="q-meta">
+        <span class="q-number">Q${qNum}</span>
+        ${yearLabel ? `<span class="q-year ${yearClass}">${yearLabel}</span>` : ''}
+      </div>
       <div class="q-text">${escapeHtml(q.text)}</div>
       ${q.claim ? `<div class="q-claim">${escapeHtml(q.claim)}</div>` : ''}
       <div class="btn-group">
@@ -1025,9 +1177,6 @@ function sectionProgress(key, sec) {
   return { total, done };
 }
 
-// ============================================================
-// ACTIONS
-// ============================================================
 function selectPeople(key) {
   currentPeople = key;
   document.getElementById('app-home').classList.remove('active');
@@ -1046,8 +1195,8 @@ function goHome() {
   document.getElementById('apps-container').innerHTML = '';
   document.getElementById('action-bar').classList.remove('show');
   document.getElementById('home-btn').classList.remove('show');
-  document.getElementById('header-title').textContent = '📋 Challenge Fléau';
-  document.getElementById('header-subtitle').textContent = 'Validation Tome v3.0 → v4.0';
+  document.getElementById('header-title').textContent = '📜 Lore Ancien Fléau';
+  document.getElementById('header-subtitle').textContent = 'Questions sur 2021–2025 et Lore intemporel';
   renderPicker();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1070,8 +1219,6 @@ function setAnswer(peopleKey, qid, field, value) {
   if (!state[peopleKey][qid]) state[peopleKey][qid] = {};
   state[peopleKey][qid][field] = value;
   saveProgress(true);
-  // Don't re-render (keeps focus)
-  // But update progress bar
   const fill = document.querySelector('.progress-fill');
   const txt = document.querySelector('.progress-text');
   if (fill) fill.style.width = computeProgress(peopleKey) + '%';
@@ -1080,18 +1227,16 @@ function setAnswer(peopleKey, qid, field, value) {
 
 function saveProgress(silent) {
   try {
-    localStorage.setItem('fleau_challenge_v2', JSON.stringify(state));
+    localStorage.setItem('fleau_challenge_v4', JSON.stringify(state));
     if (!silent) toast('💾 Sauvegardé');
-  } catch(e) {
-    toast('⚠️ Erreur de sauvegarde');
-  }
+  } catch(e) { toast('⚠️ Erreur de sauvegarde'); }
 }
 
 function exportJSON() {
   if (!currentPeople) { toast('Sélectionne un peuple d\'abord'); return; }
   const p = PEOPLES[currentPeople];
   const data = {
-    fleau_challenge_version: '2.0',
+    fleau_challenge_version: '4.0_lore_ancien_2021_2025',
     peuple: p.name,
     peuple_id: currentPeople,
     scénariste: p.who,
@@ -1106,7 +1251,8 @@ function exportJSON() {
       if (ans.status || (ans.text && ans.text.trim())) {
         data.réponses[sec.title][q.id] = {
           question: q.text,
-          tome_v3_dit: q.claim || null,
+          année_source: q.year || null,
+          source_dit: q.claim || null,
           statut: ans.status || (ans.text ? 'libre' : null),
           précision: ans.text || null
         };
@@ -1124,7 +1270,6 @@ async function copyJSON() {
     toast('📋 Copié !');
     setTimeout(closeModal, 800);
   } catch(e) {
-    // Fallback: select text
     const el = document.getElementById('json-out');
     const range = document.createRange();
     range.selectNode(el);
@@ -1140,7 +1285,7 @@ function downloadJSON() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `fleau_${currentPeople}_${new Date().toISOString().split('T')[0]}.json`;
+  a.download = `fleau_v4_${currentPeople}_${new Date().toISOString().split('T')[0]}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -1148,9 +1293,7 @@ function downloadJSON() {
   toast('💾 Téléchargé !');
 }
 
-function closeModal() {
-  document.getElementById('export-modal').classList.remove('show');
-}
+function closeModal() { document.getElementById('export-modal').classList.remove('show'); }
 
 function resetCurrent() {
   if (!currentPeople) return;
@@ -1168,23 +1311,16 @@ function toast(msg) {
   setTimeout(() => t.classList.remove('show'), 1800);
 }
 
-// ============================================================
-// INIT
-// ============================================================
 renderPicker();
 
-// Close modal on backdrop click
 document.getElementById('export-modal').addEventListener('click', (e) => {
   if (e.target.id === 'export-modal') closeModal();
 });
 
-// Prevent zoom on double-tap
 let lastTouch = 0;
 document.addEventListener('touchend', (e) => {
   const now = Date.now();
-  if (now - lastTouch <= 300) {
-    e.preventDefault();
-  }
+  if (now - lastTouch <= 300) e.preventDefault();
   lastTouch = now;
 }, { passive: false });
 </script>
